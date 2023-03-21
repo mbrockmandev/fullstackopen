@@ -1,9 +1,12 @@
-const Content = ({ part, exercise }) => {
+const Content = ({ parts }) => {
   return (
     <div>
-      <p>
-        {part} {exercise}
-      </p>
+      {parts &&
+        parts.map((part) => (
+          <p key={`${part.name}_${part.exercises}`}>
+            {part.name} {part.exercises}
+          </p>
+        ))}
     </div>
   );
 };
