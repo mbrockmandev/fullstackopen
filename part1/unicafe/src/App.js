@@ -10,6 +10,8 @@ function App() {
   const [goodCounter, setGoodCounter] = useState(0);
   const [neutralCounter, setNeutralCounter] = useState(0);
   const [badCounter, setBadCounter] = useState(0);
+  const [upvotes, setUpvotes] = useState(0);
+  const [toggle, setToggle] = useState(false);
 
   const anecdotes = [
     'If it hurts, do it more often.',
@@ -32,14 +34,30 @@ function App() {
     setBadCounter(badCounter + 1);
   };
 
+  const handleUpvote = () => {
+    setUpvotes(upvotes + 1);
+  };
+
+  const shuffleSelected = () => setToggle(!toggle);
+
   useEffect(() => {
     const randomNum = Math.floor(Math.random() * anecdotes.length);
-    console.log(randomNum);
     setSelected(randomNum);
-  }, [goodCounter, badCounter, neutralCounter]);
+  }, [toggle]);
 
   return (
     <div className='App'>
+      <h2>Anecdote Generator</h2>
+      {upvotes > 0 ? <h4>has {upvotes} upvotes.</h4> : null}
+      <Button
+        handleClick={handleUpvote}
+        text='upvote'
+      />
+      <Button
+        handleClick={shuffleSelected}
+        text='next anecdote'
+      />
+      <div>{anecdotes[selected]}</div>
       <Label text='give feedback' />
       <Button
         handleClick={addToGoodCounter}
@@ -86,7 +104,6 @@ function App() {
         </tbody>
       </table>
       <br />
-      <div>{anecdotes[selected]}</div>
     </div>
   );
 }
