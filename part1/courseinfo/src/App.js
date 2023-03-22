@@ -1,60 +1,54 @@
-import Course from './components/Course';
+import { useState } from 'react';
+import { v4 as uuidv4 } from 'uuid';
 
 const App = () => {
-  const courses = [
-    {
-      name: 'Half Stack application development',
-      id: 1,
-      parts: [
-        {
-          name: 'Fundamentals of React',
-          exercises: 10,
-          id: 1,
-        },
-        {
-          name: 'Using props to pass data',
-          exercises: 7,
-          id: 2,
-        },
-        {
-          name: 'State of a component',
-          exercises: 14,
-          id: 3,
-        },
-        {
-          name: 'Redux',
-          exercises: 11,
-          id: 4,
-        },
-      ],
-    },
-    {
-      name: 'Node.js',
-      id: 2,
-      parts: [
-        {
-          name: 'Routing',
-          exercises: 3,
-          id: 1,
-        },
-        {
-          name: 'Middlewares',
-          exercises: 7,
-          id: 2,
-        },
-      ],
-    },
-  ];
+  const [persons, setPersons] = useState([{ name: 'Arto Hellas' }]);
+  const [newName, setNewName] = useState('');
 
-  console.log(courses);
+  const handleInput = (e) => {
+    setNewName(e.target.value);
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const input = e.target.querySelector('#input');
+    const result = persons.some((item) => item.name.includes(input.value));
+    if (result) {
+      alert(
+        `Please enter a unique name. ${input.value} is already part of the phonebook.`,
+      );
+      input.value = '';
+      return;
+    }
+
+    input.value = '';
+    setPersons(persons.concat({ name: newName }));
+    setNewName('');
+  };
+
   return (
     <div>
-      {courses.map((course) => (
-        <Course
-          key={course.id}
-          course={course}
-        />
-      ))}
+      <h2>Phonebook</h2>
+      <form onSubmit={handleSubmit}>
+        <div>debug: {newName}</div>
+        <div>
+          <input
+            id='input'
+            onChange={handleInput}
+            placeholder='Enter a name.'
+          />
+        </div>
+        <div>
+          <button type='submit'>add</button>
+        </div>
+      </form>
+      <h2>Numbers</h2>
+      <ul>
+        {persons.map((person) => {
+          const id = uuidv4();
+          return <li key={id}>{person.name}</li>;
+        })}
+      </ul>
     </div>
   );
 };
