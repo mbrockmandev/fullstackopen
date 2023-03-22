@@ -1,39 +1,65 @@
-import { useState } from 'react';
-import { v4 as uuidv4 } from 'uuid';
-import Filter from './components/Filter';
-import Persons from './components/Persons';
-import PersonForm from './components/PersonForm';
+import { useState, useEffect } from 'react';
+import axios from 'axios';
+import Note from './components/Note';
 
 const App = () => {
-  const [persons, setPersons] = useState([
-    { name: 'Arto Hellas', number: '040-123456', id: 1 },
-    { name: 'Ada Lovelace', number: '39-44-5323523', id: 2 },
-    { name: 'Dan Abramov', number: '12-43-234345', id: 3 },
-    { name: 'Mary Poppendieck', number: '39-23-6423122', id: 4 },
-  ]);
-  const [filteredPeople, setFilteredPeople] = useState([]);
+  const [notes, setNotes] = useState([]);
+  const [newNote, setNewNote] = useState('');
+  const [showAll, setShowAll] = useState(false);
 
-  const handleFilter = (e) => {
-    const nameInput = e.target.value.toLowerCase();
-    console.log('input:', nameInput);
-    const filtered = persons.filter((person) => {
-      return person.name.toLowerCase().includes(nameInput);
+  useEffect(() => {
+    console.log('effect');
+    axios.get('http://localhost:3001/notes').then((response) => {
+      console.log('promise fulfilled');
+      setNotes(response.data);
     });
-    setFilteredPeople(filtered);
-    console.log(filtered);
+  }, []);
+
+  console.log('render', notes.length, 'notes');
+
+  const addNote = (event) => {
+    event.preventDefault();
+    const noteObject = {
+      content: newNote,
+      important: Math.random() > 0.5,
+      id: notes.length + 1,
+    };
+
+    setNotes(notes.concat(noteObject));
+    setNewNote('');
   };
+
+  const handleNoteChange = (event) => {
+    setNewNote(event.target.value);
+  };
+
+  const notesToShow = showAll ? notes : notes.filter((note) => note.important);
 
   return (
     <div>
-      <h2>Phonebook</h2>
-      <Filter
-        persons={persons}
-        handleFilter={handleFilter}
-      />
-      <h3>Add a new</h3>
-      <PersonForm />
-      <h2>Numbers</h2>
-      <Persons persons={filteredPeople} />
+      <h1>Notes</h1>
+      <div>
+        <button onClick={() => setShowAll(!showAll)}>
+          show {showAll ? 'important' : 'all'}
+        </button>
+      </div>
+      <ul>
+        <ul>
+          {notesToShow.map((note) => (
+            <Note
+              key={note.id}
+              note={note}
+            />
+          ))}
+        </ul>
+      </ul>
+      <form onSubmit={addNote}>
+        <input
+          value={newNote}
+          onChange={handleNoteChange}
+        />
+        <button type='submit'>save</button>
+      </form>
     </div>
   );
 };
