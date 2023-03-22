@@ -2,43 +2,42 @@ import { useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 
 const App = () => {
-  const [persons, setPersons] = useState([{ name: 'Arto Hellas' }]);
-  const [newName, setNewName] = useState('');
-
-  const handleInput = (e) => {
-    setNewName(e.target.value);
-  };
+  const [persons, setPersons] = useState([
+    { name: 'Arto Hellas', phone: '040-1234567' },
+  ]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const input = e.target.querySelector('#input');
-    const result = persons.some((item) => item.name.includes(input.value));
+    const name = e.target.querySelector('#name');
+    const phone = e.target.querySelector('#phone');
+    const result = persons.some((item) => item.name.includes(name.value));
     if (result) {
       alert(
-        `Please enter a unique name. ${input.value} is already part of the phonebook.`,
+        `Please enter a unique name. ${name.value} is already part of the phonebook.`,
       );
-      input.value = '';
       return;
     }
 
-    input.value = '';
-    setPersons(persons.concat({ name: newName }));
-    setNewName('');
+    setPersons(persons.concat({ name: name.value, phone: phone.value }));
+    name.value = '';
+    phone.value = '';
   };
 
   return (
     <div>
       <h2>Phonebook</h2>
       <form onSubmit={handleSubmit}>
-        <div>debug: {newName}</div>
         <div>
+          name:
           <input
-            id='input'
-            onChange={handleInput}
+            id='name'
             placeholder='Enter a name.'
           />
         </div>
         <div>
+          <div>
+            number: <input id='phone' />
+          </div>
           <button type='submit'>add</button>
         </div>
       </form>
@@ -46,7 +45,11 @@ const App = () => {
       <ul>
         {persons.map((person) => {
           const id = uuidv4();
-          return <li key={id}>{person.name}</li>;
+          return (
+            <li key={id}>
+              {person.name} - {person.phone}
+            </li>
+          );
         })}
       </ul>
     </div>
