@@ -28,11 +28,10 @@ const Stats = ({ text, calculate, nums }) => {
   }
 
   return (
-    <div>
-      <h4>
-        {text} - {result}
-      </h4>
-    </div>
+    <tr>
+      <td>{text}</td>
+      <td>{result}</td>
+    </tr>
   );
 };
 
