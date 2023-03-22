@@ -19,6 +19,7 @@ const App = () => {
     const filtered = persons.filter((person) => {
       return person.name.toLowerCase().includes(nameInput);
     });
+    setFilteredPeople(filtered);
     console.log(filtered);
   };
 
@@ -32,7 +33,7 @@ const App = () => {
       <h3>Add a new</h3>
       <PersonForm />
       <h2>Numbers</h2>
-      <Persons persons={persons} />
+      <Persons persons={filteredPeople} />
     </div>
   );
 };
