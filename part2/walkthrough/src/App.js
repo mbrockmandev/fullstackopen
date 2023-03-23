@@ -5,8 +5,8 @@ import noteService from './services/notes';
 import Notification from './components/Notification';
 import Footer from './components/Footer';
 
-const App = (props) => {
-  const [notes, setNotes] = useState(props.notes);
+const App = () => {
+  const [notes, setNotes] = useState([]);
   const [newNote, setNewNote] = useState('a new note...');
   const [showAll, setShowAll] = useState(true);
   const [notificationMessage, setNotificationMessage] = useState(null);
