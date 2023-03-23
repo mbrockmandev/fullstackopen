@@ -1,4 +1,3 @@
-import React, { useState } from 'react';
 import phonebookService from '../services/phonebook';
 
 const PersonForm = ({ persons, setPersons }) => {
@@ -7,16 +6,28 @@ const PersonForm = ({ persons, setPersons }) => {
     const name = e.target.querySelector('#name');
     const number = e.target.querySelector('#number');
 
-    const result = persons.some((item) => item.name.includes(name.value));
-    if (result) {
+    const currentPerson = persons.find((person) => person.name === name.value);
+
+    if (currentPerson && currentPerson.number === number) {
       alert(
-        `Please enter a unique name. ${name.value} is already part of the phonebook.`,
+        `Please enter a unique name. ${name.value} is already part of the phonebook. If you want to update the number, please enter a different number.`,
       );
       return;
+    } else if (currentPerson) {
+      if (
+        window.confirm(
+          `Would you like to update ${currentPerson.name}'s number?`,
+        )
+      ) {
+        const updatedPerson = { ...currentPerson, number: number.value };
+        updateDb(updatedPerson);
+        setPersons((prevPersons) => [...prevPersons, updatedPerson]);
+      }
+    } else if (!currentPerson) {
+      const newPerson = { name: name.value, number: number.value };
+      addToDb(newPerson);
     }
 
-    const newPerson = { name: name.value, number: number.value };
-    addToDb(newPerson);
     name.value = '';
     number.value = '';
   };
@@ -25,6 +36,10 @@ const PersonForm = ({ persons, setPersons }) => {
     phonebookService.create(newPerson).then((returnedPerson) => {
       setPersons(persons.concat(returnedPerson));
     });
+  };
+
+  const updateDb = (updatedPerson) => {
+    phonebookService.update(updatedPerson);
   };
 
   return (

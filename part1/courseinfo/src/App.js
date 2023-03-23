@@ -14,7 +14,7 @@ const App = () => {
     });
   };
 
-  useEffect(getFromDb, []);
+  useEffect(getFromDb, [persons]);
 
   const handleFilterChange = (event) => {
     setFilter(event.target.value);
