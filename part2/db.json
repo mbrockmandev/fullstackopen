@@ -24,6 +24,21 @@
       "content": "qwpofij",
       "important": false,
       "id": 5
+    },
+    {
+      "content": "add a new note!",
+      "important": true,
+      "id": 6
+    },
+    {
+      "content": "testsetse",
+      "important": false,
+      "id": 7
+    },
+    {
+      "content": "qwefqwefq",
+      "important": false,
+      "id": 8
     }
   ]
 }

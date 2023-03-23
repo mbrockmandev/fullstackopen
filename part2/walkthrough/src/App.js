@@ -2,11 +2,15 @@ import { useState, useEffect } from 'react';
 import './App.css';
 import Note from './components/Note';
 import noteService from './services/notes';
+import Notification from './components/Notification';
+import Footer from './components/Footer';
 
 const App = (props) => {
   const [notes, setNotes] = useState(props.notes);
   const [newNote, setNewNote] = useState('a new note...');
   const [showAll, setShowAll] = useState(true);
+  const [notificationMessage, setNotificationMessage] = useState(null);
+  const [notificationType, setNotificationType] = useState('');
 
   useEffect(() => {
     noteService
@@ -15,7 +19,10 @@ const App = (props) => {
         setNotes(initialNotes);
       })
       .catch((error) => {
-        alert(`You need to look into why you couldn't GET: ${error}`);
+        showNotificationMessage(
+          `You need to look into why you couldn't GET: ${error}`,
+        );
+        setNotificationType('error');
       });
   }, []);
 
@@ -31,9 +38,14 @@ const App = (props) => {
       .create(noteObject)
       .then((returnedNote) => {
         setNotes(notes.concat(returnedNote));
+        showNotificationMessage(`Added ${returnedNote.content}`);
+        setNotificationType('success');
       })
       .catch((error) => {
-        alert(`You need to look into why you couldn't POST: ${error}`);
+        showNotificationMessage(
+          `You need to look into why you couldn't POST: ${error}`,
+        );
+        setNotificationType('error');
       });
     setNewNote('');
   };
@@ -48,9 +60,19 @@ const App = (props) => {
         setNotes(notes.map((note) => (note.id !== id ? note : returnedNote)));
       })
       .catch((error) => {
-        alert(`The note ${note.content} was already deleted from the server.`);
+        showNotificationMessage(
+          `The note ${note.content} was already deleted from the server.`,
+        );
+        setNotificationType('error');
         setNotes(notes.filter((n) => n.id !== id));
       });
+  };
+
+  const showNotificationMessage = (message, duration = 5000) => {
+    setNotificationMessage(message);
+    setTimeout(() => {
+      setNotificationMessage(null);
+    }, duration);
   };
 
   const handleNoteChange = (event) => {
@@ -65,6 +87,10 @@ const App = (props) => {
   return (
     <div>
       <h1>Notes</h1>
+      <Notification
+        message={notificationMessage}
+        type={notificationType}
+      />
       <div>
         <button onClick={() => setShowAll(!showAll)}>
           show {showAll ? 'important' : 'all'}
@@ -86,6 +112,7 @@ const App = (props) => {
         />
         <button type='submit'>save</button>
       </form>
+      <Footer />
     </div>
   );
 };
