@@ -2,8 +2,6 @@ import React, { useState } from 'react';
 import phonebookService from '../services/phonebook';
 
 const PersonForm = ({ persons, setPersons }) => {
-  const [newPerson, setNewPerson] = useState({});
-
   const handleSubmit = (e) => {
     e.preventDefault();
     const name = e.target.querySelector('#name');
@@ -17,16 +15,16 @@ const PersonForm = ({ persons, setPersons }) => {
       return;
     }
 
-    setNewPerson({ name: name.value, number: number.value });
-    addToDb();
+    const newPerson = { name: name.value, number: number.value };
+    addToDb(newPerson);
     name.value = '';
     number.value = '';
   };
 
-  const addToDb = () => {
+  const addToDb = (newPerson) => {
+    console.log(newPerson);
     phonebookService.create(newPerson).then((returnedPerson) => {
       setPersons(persons.concat(returnedPerson));
-      setNewPerson({});
     });
   };
 
