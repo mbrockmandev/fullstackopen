@@ -1,20 +1,20 @@
 import { useEffect, useState } from 'react';
-import axios from 'axios';
 import Filter from './components/Filter';
 import Persons from './components/Persons';
 import PersonForm from './components/PersonForm';
+import phonebookService from './services/phonebook';
 
 const App = () => {
   const [persons, setPersons] = useState([]);
   const [filter, setFilter] = useState('');
 
-  const hook = () => {
-    axios
-      .get('http://localhost:3001/persons')
-      .then((response) => setPersons(response.data));
+  const getFromDb = () => {
+    phonebookService.getAll().then((initialPersons) => {
+      setPersons(initialPersons);
+    });
   };
 
-  useEffect(hook, []);
+  useEffect(getFromDb, []);
 
   const handleFilterChange = (event) => {
     setFilter(event.target.value);
@@ -32,7 +32,10 @@ const App = () => {
         handleFilter={handleFilterChange}
       />
       <h3>Add a new</h3>
-      <PersonForm />
+      <PersonForm
+        persons={persons}
+        setPersons={setPersons}
+      />
       <h2>Numbers</h2>
       <Persons persons={filteredPersons} />
     </div>

@@ -1,11 +1,14 @@
-import React from 'react';
+import React, { useState } from 'react';
+import phonebookService from '../services/phonebook';
 
 const PersonForm = ({ persons, setPersons }) => {
+  const [newPerson, setNewPerson] = useState({});
+
   const handleSubmit = (e) => {
     e.preventDefault();
     const name = e.target.querySelector('#name');
     const number = e.target.querySelector('#number');
-    
+
     const result = persons.some((item) => item.name.includes(name.value));
     if (result) {
       alert(
@@ -14,9 +17,17 @@ const PersonForm = ({ persons, setPersons }) => {
       return;
     }
 
-    setPersons(persons.concat({ name: name.value, number: number.value }));
+    setNewPerson({ name: name.value, number: number.value });
+    addToDb();
     name.value = '';
     number.value = '';
+  };
+
+  const addToDb = () => {
+    phonebookService.create(newPerson).then((returnedPerson) => {
+      setPersons(persons.concat(returnedPerson));
+      setNewPerson({});
+    });
   };
 
   return (
