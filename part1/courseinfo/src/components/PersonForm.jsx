@@ -22,7 +22,6 @@ const PersonForm = ({ persons, setPersons }) => {
   };
 
   const addToDb = (newPerson) => {
-    console.log(newPerson);
     phonebookService.create(newPerson).then((returnedPerson) => {
       setPersons(persons.concat(returnedPerson));
     });
