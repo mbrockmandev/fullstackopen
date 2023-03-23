@@ -7,7 +7,7 @@ const Persons = ({ persons, setPersons }) => {
     if (window.confirm(`Delete ${name}?`)) {
       phonebookService.remove(id);
       const updatedPersons = persons.filter((person) => person.id !== id);
-      console.log(updatedPersons);
+
       setPersons(updatedPersons);
     }
   };

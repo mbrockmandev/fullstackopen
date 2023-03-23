@@ -1,11 +1,11 @@
 import React from 'react';
 
-const Filter = ({ handleFilter }) => {
+const Filter = ({ value, handleFilter }) => {
   return (
     <div>
       Filter shown with
       <input
-        id='filter'
+        value={value}
         onChange={handleFilter}
       />
     </div>

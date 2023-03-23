@@ -1,7 +1,6 @@
 import './App.css';
 
 const Hello = (props) => {
-  console.log(props);
   return (
     <div>
       Hello {props.name}, you are {props.age} years old!
