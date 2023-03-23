@@ -1,5 +1,5 @@
 import './App.css';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Notification from './components/Notification';
 import Search from './components/Search';
 import Content from './components/Content';
@@ -9,22 +9,32 @@ const App = () => {
   const [notificationMessage, setNotificationMessage] = useState('');
   const [query, setQuery] = useState('');
   const [countries, setCountries] = useState([]);
+  const [selectedCountries, setSelectedCountries] = useState([]);
 
-  const getCountriesWithQuery = async () => {
+  useEffect(() => {
+    getCountriesWithQuery(query);
+  }, [query]);
+
+  const getCountriesWithQuery = async (query) => {
     try {
       const searchResults = await countryController.getWithQuery(query);
-      console.log(searchResults);
       setCountries(searchResults);
+      // console.log(searchResults);
     } catch (error) {
       console.log(error);
     }
   };
 
   const handleQuery = (e) => {
-    if (e.target.value.length > 2) {
+    if (e.target.value.length > 3) {
       setQuery(e.target.value);
-      getCountriesWithQuery(query);
     }
+  };
+
+  const handleButtonClick = (index) => {
+    const newSelectionArray = [...selectedCountries];
+    newSelectionArray[index] = !newSelectionArray[index];
+    setSelectedCountries(newSelectionArray);
   };
 
   return (
@@ -34,7 +44,11 @@ const App = () => {
         handleQuery={handleQuery}
       />
       <Notification message={notificationMessage} />
-      <Content countries={countries} />
+      <Content
+        countries={countries}
+        selectedCountries={selectedCountries}
+        onButtonClick={handleButtonClick}
+      />
     </div>
   );
 };

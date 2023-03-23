@@ -9,8 +9,14 @@ const getAll = () => {
 
 // search name / official name fields for given query
 const getWithQuery = (query) => {
+  if (!query) return;
   const request = axios.get(`${baseUrl}/name/${query}`);
-  return request.then((response) => response.data);
+  return request
+    .then((response) => response.data)
+    .catch((error) => {
+      console.log(error);
+      throw new Error('Failed to fetch data.');
+    });
 };
 
 export default { getAll, getWithQuery };
