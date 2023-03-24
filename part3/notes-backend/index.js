@@ -1,7 +1,13 @@
 const express = require('express');
 const app = express();
+const cors = require('cors');
+require('dotenv').config();
+const PORT = process.env.PORT || '8080';
 
+// middleware
+app.use(cors());
 app.use(express.json());
+app.use(express.static('build'));
 
 let notes = [
   {
@@ -23,7 +29,7 @@ let notes = [
 
 // GET TEST
 app.get('/', (req, res) => {
-  res.send('<h1>Hello World!</h1>');
+  res.send('<h1>Notes Full Stack!</h1>');
 });
 
 // GET ALL NOTES
@@ -77,6 +83,6 @@ app.delete('/api/notes/:id', (req, res) => {
   res.status(204).end();
 });
 
-const PORT = 3001;
-app.listen(PORT);
-console.log(`Server running on port ${PORT}`);
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
