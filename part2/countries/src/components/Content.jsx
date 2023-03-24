@@ -2,7 +2,12 @@ import React from 'react';
 import CountryDetail from './CountryDetail';
 import CountryList from './CountryList';
 
-const Content = ({ countries, selectedCountries, onButtonClick }) => {
+const Content = ({
+  countries,
+  selectedCountries,
+  onButtonClick,
+  weatherController,
+}) => {
   if (!countries) return null;
 
   if (countries.length === 1) {
@@ -21,8 +26,6 @@ const Content = ({ countries, selectedCountries, onButtonClick }) => {
   if (countries.length > 10) {
     return <h4>Too many matches, please change your query.</h4>;
   }
-
-  return <div>Content</div>;
 };
 
 export default Content;
