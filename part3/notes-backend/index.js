@@ -5,11 +5,20 @@ require('dotenv').config();
 const PORT = process.env.PORT || '8080';
 const morgan = require('morgan');
 
+const requestLogger = (req, _, next) => {
+  console.log('Method:', req.method);
+  console.log('Path:  ', req.path);
+  console.log('Body:  ', req.body);
+  console.log('---');
+  next();
+};
+
 // middleware
 app.use(cors());
 app.use(express.json());
 app.use(express.static('build'));
 app.use(morgan('short'));
+app.use(requestLogger);
 
 let notes = [
   {
@@ -43,7 +52,6 @@ app.get('/api/notes/', (req, res) => {
 app.get('/api/notes/:id', (req, res) => {
   const id = Number(req.params.id);
   const note = notes.find((note) => {
-    console.log(note.id, typeof note.id, id, typeof id, note.id === id);
     return note.id === id;
   });
   if (note) {
