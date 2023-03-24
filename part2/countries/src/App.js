@@ -39,16 +39,20 @@ const App = () => {
 
   return (
     <div className='App'>
-      <Search
-        value={query}
-        handleQuery={handleQuery}
-      />
+      <div className='searchContainer'>
+        <Search
+          value={query}
+          handleQuery={handleQuery}
+        />
+      </div>
       <Notification message={notificationMessage} />
-      <Content
-        countries={countries}
-        selectedCountries={selectedCountries}
-        onButtonClick={handleButtonClick}
-      />
+      <div className='contentContainer'>
+        <Content
+          countries={countries}
+          selectedCountries={selectedCountries}
+          onButtonClick={handleButtonClick}
+        />
+      </div>
     </div>
   );
 };

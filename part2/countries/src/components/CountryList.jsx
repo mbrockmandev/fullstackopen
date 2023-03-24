@@ -3,22 +3,23 @@ import CountryDetail from './CountryDetail';
 
 const CountryList = ({ countries, selectedCountries, onButtonClick }) => {
   return (
-    <div>
+    <div className='listContainer'>
       {countries.map((country, index) => (
         <div key={`${country.fifa}_${country.cca3}`}>
-          <h4>
+          <div className='listName'>
             {country.name.common}
             <button
-              className='btn btn-primary'
+              className='listBtn btn btn-primary'
               onClick={() => {
                 onButtonClick(index);
               }}>
               Show Detail
             </button>
-          </h4>
+          </div>
           {selectedCountries[index] === true ? (
             <CountryDetail country={countries[index]} />
           ) : null}
+          <br />
         </div>
       ))}
     </div>

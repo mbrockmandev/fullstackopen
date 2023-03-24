@@ -5,7 +5,7 @@ const CountryDetail = ({ country }) => {
   const flag = flags['png'];
 
   return (
-    <div>
+    <div className='detailContainer'>
       <h2>{name.common}</h2>
       <p>capital: {capital}</p>
       <p>area: {area}</p>
@@ -20,6 +20,7 @@ const CountryDetail = ({ country }) => {
           src={flag}
           alt=''></img>
       </div>
+      <br />
     </div>
   );
 };

@@ -21,14 +21,60 @@
 }
 
 .App-header {
+  display: flex;
   background-color: #282c34;
   min-height: 100vh;
-  display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   font-size: calc(10px + 2vmin);
   color: white;
+}
+
+.searchContainer {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+.contentContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.listContainer {
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+  padding: 16px;
+  margin: 16px;
+  background-color: #fff;
+}
+
+.detailContainer {
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+  padding: 24px;
+  margin: 8px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: repeat(3, auto);
+  grid-gap: 30px;
+  justify-items: center;
+  align-items: center;
+  max-width: 70vw;
+}
+
+.listName {
+  
+
+}
+
+.listBtn {
+  
 }
 
 .App-link {
