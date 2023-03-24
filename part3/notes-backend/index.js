@@ -4,6 +4,8 @@ const cors = require('cors');
 require('dotenv').config();
 const PORT = process.env.PORT || '8080';
 const morgan = require('morgan');
+const mongoose = require('mongoose');
+const url = process.env.MONGO_URI;
 
 const requestLogger = (req, _, next) => {
   console.log('Method:', req.method);
@@ -19,6 +21,17 @@ app.use(express.json());
 app.use(express.static('build'));
 app.use(morgan('short'));
 app.use(requestLogger);
+
+// connect to mongoDB
+mongoose.set('strictQuery', false);
+mongoose.connect(url);
+
+const noteSchema = new mongoose.Schema({
+  content: String,
+  important: Boolean,
+});
+
+const Note = mongoose.model('Note', noteSchema);
 
 let notes = [
   {
@@ -38,14 +51,11 @@ let notes = [
   },
 ];
 
-// GET TEST
-app.get('/', (req, res) => {
-  res.send('<h1>Notes Full Stack!</h1>');
-});
-
 // GET ALL NOTES
 app.get('/api/notes/', (req, res) => {
-  res.json(notes);
+  Note.find({}).then((notes) => {
+    res.json(notes);
+  });
 });
 
 // GET BY ID
@@ -117,5 +127,7 @@ app.delete('/api/notes/:id', (req, res) => {
 });
 
 app.listen(PORT, () => {
+  console.log('ENV PORT:', process.env.PORT);
+  console.log('MONGO URI:', url);
   console.log(`Server running on port ${PORT}`);
 });

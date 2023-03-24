@@ -8,7 +8,7 @@ POST http://localhost:3001/api/notes/
 Content-Type: application/json
 
 {
-  "content": "What's up! This is a new POST!",
-  "important": false
+  "content": "Mongoose makes use of mongo easy!",
+  "important": true
 }
 ###

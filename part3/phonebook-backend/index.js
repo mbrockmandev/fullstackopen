@@ -1,5 +1,8 @@
 const express = require('express');
 const cors = require('cors');
+const mongoose = require('mongoose');
+require('dotenv').config();
+const url = process.env.MONGO_URI;
 const app = express();
 
 // morgan config
