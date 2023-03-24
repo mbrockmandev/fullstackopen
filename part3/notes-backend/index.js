@@ -3,11 +3,13 @@ const app = express();
 const cors = require('cors');
 require('dotenv').config();
 const PORT = process.env.PORT || '8080';
+const morgan = require('morgan');
 
 // middleware
 app.use(cors());
 app.use(express.json());
 app.use(express.static('build'));
+app.use(morgan('short'));
 
 let notes = [
   {
@@ -73,6 +75,29 @@ app.post('/api/notes', (req, res) => {
 
   notes = notes.concat(note);
   res.json(note);
+});
+
+// PUT BY ID
+app.put('/api/notes/:id', (req, res) => {
+  const id = Number(req.params.id);
+  const noteIndex = notes.findIndex((note) => note.id === id);
+
+  if (noteIndex !== -1) {
+    notes = notes.map((note) => {
+      if (note.id === id) {
+        return {
+          ...note,
+          important: !note.important,
+        };
+      } else {
+        return note;
+      }
+    });
+    const updatedNote = notes.find((note) => note.id === id);
+    res.status(200).json(updatedNote);
+  } else {
+    res.status(204).end();
+  }
 });
 
 // DELETE BY ID
