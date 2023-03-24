@@ -1,7 +1,18 @@
 const express = require('express');
+const morgan = require('morgan');
 const app = express();
+app.use(morgan('tiny'));
+
+const requestLogger = (request, response, next) => {
+  console.log('Method:', request.method);
+  console.log('Path:  ', request.path);
+  console.log('Body:  ', request.body);
+  console.log('---');
+  next();
+};
 
 app.use(express.json());
+app.use(requestLogger);
 
 let persons = [
   {
@@ -28,7 +39,13 @@ let persons = [
 
 app.get('/info/', (req, res) => {
   const now = new Date();
-  const formatted = now.getDate();
+  const formattedDate = now.toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  });
+
+  const formattedTime = now.toLocaleTimeString('en-US');
 
   const responseHtml = `
   <!DOCTYPE html>
@@ -38,7 +55,7 @@ app.get('/info/', (req, res) => {
     </head>
     <body>
       <h3>There are ${persons.length} contacts in the phonebook.</h3>
-      <h3>The current time is: ${formatted}</h3>
+      <h3>The current time is: ${formattedDate} at ${formattedTime}</h3>
     </body>
   </html>
 `;
@@ -85,7 +102,7 @@ app.post('/api/persons', (req, res) => {
   } else if (!body.number) {
     return res.status(404).json({ error: 'Number Missing.' });
   } else if (isDuplicate(body.name)) {
-    return res.status(404).json({ error: 'Duplicate Name.' });
+    return res.status(409).json({ error: 'Duplicate Name.' });
   }
 
   const person = {
@@ -105,6 +122,13 @@ app.delete('/api/persons/:id', (req, res) => {
 
   res.status(204).end();
 });
+
+// HANDLE UNKNOWN ROUTE
+const unknownEndpoint = (request, response) => {
+  response.status(404).send({ error: 'unknown endpoint' });
+};
+
+app.use(unknownEndpoint);
 
 const PORT = 3001;
 app.listen(PORT);
