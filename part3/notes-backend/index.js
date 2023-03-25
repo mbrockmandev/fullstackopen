@@ -45,6 +45,7 @@ let notes = [
 
 // GET all notes
 app.get('/api/notes/', (req, res) => {
+  
   Note.find({}).then((notes) => {
     res.json(notes);
   });

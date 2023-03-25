@@ -19,32 +19,7 @@ app.use(cors());
 app.use(express.json());
 app.use(requestLogger);
 
-// mongoose setup
-
-let persons = [
-  {
-    id: 1,
-    name: 'Arto Hellas',
-    number: '040-123456',
-  },
-  {
-    id: 2,
-    name: 'Ada Lovelace',
-    number: '39-44-5323523',
-  },
-  {
-    id: 3,
-    name: 'Dan Abramov',
-    number: '12-43-234345',
-  },
-  {
-    id: 4,
-    name: 'Mary Poppendieck',
-    number: '39-23-6423122',
-  },
-];
-
-app.get('/info/', (req, res) => {
+app.get('/info/', (_, res) => {
   const now = new Date();
   const formattedDate = now.toLocaleDateString('en-US', {
     year: 'numeric',
@@ -77,32 +52,18 @@ app.get('/api/people/', (req, res) => {
 });
 
 // GET BY ID
-app.get('/api/persons/:id', (req, res) => {
-  const id = Number(req.params.id);
-  const person = persons.find((person) => {
-    console.log(person.id, typeof person.id, id, typeof id, person.id === id);
-    return person.id === id;
-  });
-  if (person) {
-    res.json(person);
-  } else {
-    res.status(404).end();
-  }
+app.get('/api/people/:id', (req, res) => {
+  Person.findById(req.params.id)
+    .then((person) => {
+      res.json(person);
+    })
+    .catch((error) => {
+      res.json({ error: error.message }).status(404);
+    });
 });
 
-// Helper to make new ID
-const generateId = () => {
-  const maxId = persons.length > 0 ? Math.max(...persons.map((p) => p.id)) : 0;
-  return maxId + 1;
-};
-
-// helper to find duplicate names
-const isDuplicate = (name) => {
-  return persons.map((person) => person.name).includes(name);
-};
-
 // POST NEW person
-app.post('/api/persons', (req, res) => {
+app.post('/api/people', (req, res) => {
   const body = req.body;
 
   // Validate input
@@ -110,30 +71,52 @@ app.post('/api/persons', (req, res) => {
     return res.status(404).json({ error: 'Name Missing.' });
   } else if (!body.number) {
     return res.status(404).json({ error: 'Number Missing.' });
-  } else if (isDuplicate(body.name)) {
-    return res.status(409).json({ error: 'Duplicate Name.' });
   }
+  // add checking for duplicates?
 
-  const person = {
+  const person = new Person({
     name: body.name,
     number: body.number || false,
-    id: generateId(),
-  };
+  });
 
-  persons = persons.concat(person);
-  res.json(person);
+  person.save().then((savedPerson) => {
+    res.json(savedPerson);
+  });
+});
+
+// PUT by ID
+app.put('/api/people/:id', (req, res) => {
+  const body = req.body;
+
+  // Validate input
+  if (!body.name) {
+    return res.status(404).json({ error: 'Name Missing.' });
+  } else if (!body.number) {
+    return res.status(404).json({ error: 'Number Missing.' });
+  }
+
+  Person.findByIdAndUpdate(req.params.id, req.body, { new: true })
+    .then((updatedPerson) => {
+      res.status(200).json(updatedPerson);
+    })
+    .catch((error) => {
+      res.status(404).json({ error: error.message });
+    });
 });
 
 // DELETE BY ID
-app.delete('/api/persons/:id', (req, res) => {
-  const id = Number(req.params.id);
-  persons = persons.filter((person) => person.id !== id);
-
-  res.status(204).end();
+app.delete('/api/people/:id', (req, res) => {
+  Person.findByIdAndDelete(req.params.id)
+    .then((person) => {
+      res.status(204).json(person);
+    })
+    .catch((error) => {
+      res.status(404).json({ error: error.message });
+    });
 });
 
 // HANDLE UNKNOWN ROUTE
-const unknownEndpoint = (request, response) => {
+const unknownEndpoint = (_, response) => {
   response.status(404).send({ error: 'unknown endpoint' });
 };
 
