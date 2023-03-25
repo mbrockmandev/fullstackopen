@@ -40,7 +40,7 @@ app.get('/api/notes/:id', (req, res) => {
 });
 
 // POST new note
-app.post('/api/notes', (req, res) => {
+app.post('/api/notes', (req, res, next) => {
   const body = req.body;
 
   if (!body.content) {
@@ -52,9 +52,14 @@ app.post('/api/notes', (req, res) => {
     important: body.important || false,
   });
 
-  note.save().then((savedNote) => {
-    res.json(savedNote);
-  });
+  note
+    .save()
+    .then((savedNote) => {
+      res.json(savedNote);
+    })
+    .catch((err) => {
+      next(err);
+    });
 });
 
 // PUT by id

@@ -20,7 +20,7 @@ const App = () => {
       })
       .catch((error) => {
         showNotificationMessage(
-          `You need to look into why you couldn't GET: ${error}`,
+          `You need to look into why you couldn't GET: ${error.message}`,
         );
         setNotificationType('error');
       });
@@ -42,9 +42,13 @@ const App = () => {
         setNotificationType('success');
       })
       .catch((error) => {
-        showNotificationMessage(
-          `You need to look into why you couldn't POST: ${error}`,
-        );
+        // handle validation errors!
+        const input = error.request.response;
+        const startIndex = input.indexOf('ValidationError');
+        const endIndex = input.indexOf('<br>', startIndex);
+        const errorMessage = input.slice(startIndex, endIndex);
+
+        showNotificationMessage(`${errorMessage}`);
         setNotificationType('error');
       });
     setNewNote('');
