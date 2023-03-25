@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import './App.css';
 import Filter from './components/Filter';
 import PersonForm from './components/PersonForm';
-import phonebookService from './services/phonebook';
+import personService from './services/person';
 import Notification from './components/Notification';
 import Content from './components/Content';
 
@@ -16,7 +16,7 @@ const App = () => {
   const [notificationType, setNotificationType] = useState('');
 
   const getFromDb = () => {
-    phonebookService.getAll().then((prevPeople) => {
+    personService.getAll().then((prevPeople) => {
       setAllPeople(prevPeople);
     });
   };
@@ -33,12 +33,11 @@ const App = () => {
   const addPerson = (e) => {
     e.preventDefault();
     const person = allPeople.filter((p) => p.name === newName);
-
     const newPerson = person[0];
     const updatedPerson = { ...newPerson, number: newNumber };
 
     if (person.length !== 0) {
-      phonebookService
+      personService
         .update(updatedPerson.id, updatedPerson)
         .then((returnedPerson) => {
           setAllPeople(
@@ -64,7 +63,7 @@ const App = () => {
         name: newName,
         number: newNumber,
       };
-      phonebookService
+      personService
         .create(newPerson)
         .then((returnedPerson) => {
           setAllPeople([...allPeople, returnedPerson]);
@@ -72,9 +71,12 @@ const App = () => {
           setNewNumber('');
           showNotification(`${newName} was successfully added!`);
           setNotificationType('success');
+
+          showNotification(`Error: Cannot create this person.`);
+          setNotificationType('error');
         })
         .catch((error) => {
-          showNotification(`Error: ${error.response.data.error}`);
+          showNotification(`${error}`);
           setNotificationType('error');
         });
     }
@@ -82,11 +84,10 @@ const App = () => {
 
   const deletePerson = (id) => {
     const person = allPeople.filter((p) => p.id === id);
-    console.log('person:', person[0]);
     const name = person[0].name;
     const personId = person[0].id;
     if (window.confirm(`Delete ${name}?`)) {
-      phonebookService.remove(personId);
+      personService.remove(personId);
       showNotification(`${name} successfully deleted.`);
       setNotificationType('success');
       setAllPeople(allPeople.filter((p) => p.id !== personId));

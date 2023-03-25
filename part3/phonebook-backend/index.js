@@ -91,7 +91,9 @@ app.post('/api/people', (req, res, next) => {
     .then((savedPerson) => {
       res.json(savedPerson);
     })
-    .catch((err) => next(err));
+    .catch((err) => {
+      next(err);
+    });
 });
 
 // PUT by ID
