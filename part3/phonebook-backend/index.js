@@ -7,10 +7,15 @@ const Person = require('./models/person');
 
 // logs HTTP requests
 const requestLogger = (req, _, next) => {
-  console.log('Method:', req.method);
-  console.log('Path:  ', req.path);
-  console.log('Body:  ', req.body);
-  console.log('---');
+  console.log(
+    '=====\nMethod:',
+    req.method,
+    'Path:  ',
+    req.path,
+    'Body:  ',
+    req.body,
+    '\n=====',
+  );
   next();
 };
 
@@ -55,10 +60,15 @@ app.get('/api/people/', (req, res) => {
 app.get('/api/people/:id', (req, res) => {
   Person.findById(req.params.id)
     .then((person) => {
-      res.json(person);
+      if (person) {
+        res.json(person);
+      } else {
+        console.log('got to this point!');
+        res.status(404).end();
+      }
     })
     .catch((error) => {
-      res.json({ error: error.message }).status(404);
+      res.json({ error: error.message }).status(500).end();
     });
 });
 

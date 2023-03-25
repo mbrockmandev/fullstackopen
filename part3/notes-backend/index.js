@@ -3,49 +3,19 @@ const app = express();
 const cors = require('cors');
 require('dotenv').config();
 const PORT = process.env.PORT || '8080';
-const morgan = require('morgan');
-const mongoose = require('mongoose');
-const url = process.env.MONGO_URI;
 const Note = require('./models/note');
-
-// logs HTTP requests
-const requestLogger = (req, _, next) => {
-  console.log('Method:', req.method);
-  console.log('Path:  ', req.path);
-  console.log('Body:  ', req.body);
-  console.log('---');
-  next();
-};
+const errorHandler = require('./errorHandler');
+const requestLogger = require('./requestLogger');
 
 // middleware
-app.use(cors());
-app.use(express.json());
 app.use(express.static('build'));
-app.use(morgan('short'));
+app.use(express.json());
 app.use(requestLogger);
-
-// static data
-let notes = [
-  {
-    id: 1,
-    content: 'HTML is easy',
-    important: true,
-  },
-  {
-    id: 2,
-    content: 'Browser can execute only JavaScript',
-    important: false,
-  },
-  {
-    id: 3,
-    content: 'GET and POST are the most important methods of HTTP protocol',
-    important: true,
-  },
-];
+app.use(cors());
+app.use(errorHandler);
 
 // GET all notes
-app.get('/api/notes/', (req, res) => {
-  
+app.get('/api/notes/', (_, res) => {
   Note.find({}).then((notes) => {
     res.json(notes);
   });
@@ -55,10 +25,17 @@ app.get('/api/notes/', (req, res) => {
 app.get('/api/notes/:id', (req, res) => {
   Note.findById(req.params.id)
     .then((note) => {
-      res.json(note);
+      if (note) {
+        res.json(note);
+      } else {
+        res.status(404).end();
+      }
     })
     .catch((error) => {
-      res.json({ error: error.message }).status(404);
+      console.log(error.message);
+      res
+        .status(400)
+        .json({ error: `${req.params.id} is the incorrect format for an id.` });
     });
 });
 
@@ -82,37 +59,29 @@ app.post('/api/notes', (req, res) => {
 
 // PUT by id
 app.put('/api/notes/:id', (req, res) => {
-  const id = Number(req.params.id);
-  const noteIndex = notes.findIndex((note) => note.id === id);
+  const body = req.body;
 
-  if (noteIndex !== -1) {
-    notes = notes.map((note) => {
-      if (note.id === id) {
-        return {
-          ...note,
-          important: !note.important,
-        };
-      } else {
-        return note;
-      }
-    });
-    const updatedNote = notes.find((note) => note.id === id);
-    res.status(200).json(updatedNote);
-  } else {
-    res.status(204).end();
-  }
+  const note = {
+    content: body.content,
+    important: body.important,
+  };
+
+  Note.findByIdAndUpdate(req.params.id, note, { new: true })
+    .then((updatedNote) => {
+      res.json(updatedNote);
+    })
+    .catch((err) => next(err));
 });
 
 // DELETE by id
-app.delete('/api/notes/:id', (req, res) => {
-  const id = Number(req.params.id);
-  notes = notes.filter((note) => note.id !== id);
-
-  res.status(204).end();
+app.delete('/api/notes/:id', (req, res, next) => {
+  Note.findByIdAndDelete(req.params.id)
+    .then((result) => {
+      res.status(204).end();
+    })
+    .catch((err) => next(err));
 });
 
 app.listen(PORT, () => {
-  console.log('ENV PORT:', process.env.PORT);
-  console.log('MONGO URI:', url);
   console.log(`Server running on port ${PORT}`);
 });
