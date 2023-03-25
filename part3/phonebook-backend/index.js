@@ -49,14 +49,14 @@ app.get('/info/', async (_, res, next) => {
 });
 
 // GET ALL people
-app.get('/api/people/', (req, res, next) => {
+app.get('/api/people/', (req, res) => {
   Person.find({}).then((people) => {
     res.json(people);
   });
 });
 
 // GET BY ID
-app.get('/api/people/:id', (req, res) => {
+app.get('/api/people/:id', (req, res, next) => {
   Person.findById(req.params.id)
     .then((person) => {
       if (person) {
