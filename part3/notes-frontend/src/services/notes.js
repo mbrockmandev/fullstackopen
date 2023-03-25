@@ -21,11 +21,3 @@ export default {
   create,
   update,
 };
-
-// const noteService = {
-//   getAll,
-//   create,
-//   update,
-// };
-
-// export default noteService;

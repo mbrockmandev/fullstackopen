@@ -1,20 +1,25 @@
 const express = require('express');
 const cors = require('cors');
-const mongoose = require('mongoose');
 require('dotenv').config();
-const url = process.env.MONGO_URI;
+const PORT = process.env.PORT || '8080';
 const app = express();
+const Person = require('./models/person');
 
-// morgan config
-const morgan = require('morgan');
-morgan.token('req-body', (req) => JSON.stringify(req.body));
-const morganFormat =
-  ':method :url :status :res[content-length] - :response-time ms \n:req-body';
-app.use(morgan(morganFormat));
+// logs HTTP requests
+const requestLogger = (req, _, next) => {
+  console.log('Method:', req.method);
+  console.log('Path:  ', req.path);
+  console.log('Body:  ', req.body);
+  console.log('---');
+  next();
+};
 
 // middleware
 app.use(cors());
 app.use(express.json());
+app.use(requestLogger);
+
+// mongoose setup
 
 let persons = [
   {
@@ -64,9 +69,11 @@ app.get('/info/', (req, res) => {
   res.status(200).send(responseHtml);
 });
 
-// GET ALL persons
-app.get('/api/persons/', (req, res) => {
-  res.json(persons);
+// GET ALL people
+app.get('/api/people/', (req, res) => {
+  Person.find({}).then((people) => {
+    res.json(people);
+  });
 });
 
 // GET BY ID
@@ -132,6 +139,6 @@ const unknownEndpoint = (request, response) => {
 
 app.use(unknownEndpoint);
 
-const PORT = process.env.PORT || '8080';
-app.listen(PORT);
-console.log(`Server running on port ${PORT}`);
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
