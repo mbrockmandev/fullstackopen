@@ -6,7 +6,9 @@ const PORT = process.env.PORT || '8080';
 const morgan = require('morgan');
 const mongoose = require('mongoose');
 const url = process.env.MONGO_URI;
+const Note = require('./models/note');
 
+// logs HTTP requests
 const requestLogger = (req, _, next) => {
   console.log('Method:', req.method);
   console.log('Path:  ', req.path);
@@ -22,17 +24,7 @@ app.use(express.static('build'));
 app.use(morgan('short'));
 app.use(requestLogger);
 
-// connect to mongoDB
-mongoose.set('strictQuery', false);
-mongoose.connect(url);
-
-const noteSchema = new mongoose.Schema({
-  content: String,
-  important: Boolean,
-});
-
-const Note = mongoose.model('Note', noteSchema);
-
+// static data
 let notes = [
   {
     id: 1,
@@ -51,33 +43,25 @@ let notes = [
   },
 ];
 
-// GET ALL NOTES
+// GET all notes
 app.get('/api/notes/', (req, res) => {
   Note.find({}).then((notes) => {
     res.json(notes);
   });
 });
 
-// GET BY ID
+// GET by id
 app.get('/api/notes/:id', (req, res) => {
-  const id = Number(req.params.id);
-  const note = notes.find((note) => {
-    return note.id === id;
-  });
-  if (note) {
-    res.json(note);
-  } else {
-    res.status(404).end();
-  }
+  Note.findById(req.params.id)
+    .then((note) => {
+      res.json(note);
+    })
+    .catch((error) => {
+      res.json({ error: error.message }).status(404);
+    });
 });
 
-// Helper to make new ID
-const generateId = () => {
-  const maxId = notes.length > 0 ? Math.max(...notes.map((n) => n.id)) : 0;
-  return maxId + 1;
-};
-
-// POST NEW NOTE
+// POST new note
 app.post('/api/notes', (req, res) => {
   const body = req.body;
 
@@ -85,17 +69,17 @@ app.post('/api/notes', (req, res) => {
     return res.status(404).json({ error: 'Content Missing.' });
   }
 
-  const note = {
+  const note = new Note({
     content: body.content,
     important: body.important || false,
-    id: generateId(),
-  };
+  });
 
-  notes = notes.concat(note);
-  res.json(note);
+  note.save().then((savedNote) => {
+    res.json(savedNote);
+  });
 });
 
-// PUT BY ID
+// PUT by id
 app.put('/api/notes/:id', (req, res) => {
   const id = Number(req.params.id);
   const noteIndex = notes.findIndex((note) => note.id === id);
@@ -118,7 +102,7 @@ app.put('/api/notes/:id', (req, res) => {
   }
 });
 
-// DELETE BY ID
+// DELETE by id
 app.delete('/api/notes/:id', (req, res) => {
   const id = Number(req.params.id);
   notes = notes.filter((note) => note.id !== id);
