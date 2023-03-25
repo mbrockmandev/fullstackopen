@@ -1,21 +1,4 @@
-// connect to mongoDB
-const config = require('../utils/config');
-const url = config.MONGO_URI;
 const mongoose = require('mongoose');
-
-mongoose.set('strictQuery', false);
-mongoose.connect(url);
-
-console.log('connecting to MongoDB');
-
-mongoose
-  .connect(url)
-  .then((result) => {
-    console.log('connected to MongoDB');
-  })
-  .catch((error) => {
-    console.log('error connecting to MongoDB:', error.message);
-  });
 
 const noteSchema = new mongoose.Schema({
   content: {
