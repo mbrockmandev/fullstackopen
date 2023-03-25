@@ -26,3 +26,19 @@ GET http://localhost:3001/xyz
 ###
 GET http://localhost:3001/api/notes/5c41c90e84d891c15dfa3431
 ###
+POST http://localhost:3001/api/people/
+Content-Type: application/json
+
+{
+  "name": "Ju",
+  "number": "867-5309"
+}
+###
+POST http://localhost:3001/api/people/
+Content-Type: application/json
+
+{
+  "name": "Jenny",
+  "number": "1234"
+}
+###

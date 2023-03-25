@@ -26,7 +26,7 @@ app.use(express.json());
 app.use(requestLogger);
 app.use(errorHandler);
 
-app.get('/info/', async (_, res) => {
+app.get('/info/', async (_, res, next) => {
   const now = new Date();
   const formattedDate = now.toLocaleDateString('en-US', {
     year: 'numeric',
@@ -49,7 +49,7 @@ app.get('/info/', async (_, res) => {
 });
 
 // GET ALL people
-app.get('/api/people/', (req, res) => {
+app.get('/api/people/', (req, res, next) => {
   Person.find({}).then((people) => {
     res.json(people);
   });
@@ -66,13 +66,11 @@ app.get('/api/people/:id', (req, res) => {
         res.status(404).end();
       }
     })
-    .catch((error) => {
-      res.json({ error: error.message }).status(500).end();
-    });
+    .catch((err) => next(err));
 });
 
 // POST NEW person
-app.post('/api/people', (req, res) => {
+app.post('/api/people', (req, res, next) => {
   const body = req.body;
 
   // Validate input
@@ -88,13 +86,16 @@ app.post('/api/people', (req, res) => {
     number: body.number || false,
   });
 
-  person.save().then((savedPerson) => {
-    res.json(savedPerson);
-  });
+  person
+    .save()
+    .then((savedPerson) => {
+      res.json(savedPerson);
+    })
+    .catch((err) => next(err));
 });
 
 // PUT by ID
-app.put('/api/people/:id', (req, res) => {
+app.put('/api/people/:id', (req, res, next) => {
   const body = req.body;
 
   // Validate input
@@ -108,20 +109,16 @@ app.put('/api/people/:id', (req, res) => {
     .then((updatedPerson) => {
       res.status(200).json(updatedPerson);
     })
-    .catch((error) => {
-      res.status(404).json({ error: error.message });
-    });
+    .catch((err) => next(err));
 });
 
 // DELETE BY ID
-app.delete('/api/people/:id', (req, res) => {
+app.delete('/api/people/:id', (req, res, next) => {
   Person.findByIdAndDelete(req.params.id)
     .then((person) => {
       res.status(204).json(person);
     })
-    .catch((error) => {
-      res.status(404).json({ error: error.message });
-    });
+    .catch((err) => next(err));
 });
 
 // HANDLE UNKNOWN ROUTE
