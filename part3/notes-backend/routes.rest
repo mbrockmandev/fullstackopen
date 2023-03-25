@@ -16,3 +16,19 @@ GET http://localhost:3001/api/notes/5c41c90e84d891c15dfa3431
 ### malformed id
 GET http://localhost:3001/api/notes/5c41c90e84d891c15dfa343133
 ###
+PUT http://localhost:3001/api/notes/641efc0f7b66f4f0db31f213
+Content-Type: application/json
+
+{
+  "content": "Mongoose makes use of mongo easy!",
+  "important": true
+}
+### content too short -- Validation Error
+PUT http://localhost:3001/api/notes/641efc0f7b66f4f0db31f213
+Content-Type: application/json
+
+{
+  "content": "lol",
+  "important": true
+}
+###
