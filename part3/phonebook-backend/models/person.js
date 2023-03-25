@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 mongoose.set('strictQuery', false);
 mongoose.connect(url);
 
-console.log('connecting to:', url);
+console.log('connecting to MongoDB');
 
 mongoose
   .connect(url)

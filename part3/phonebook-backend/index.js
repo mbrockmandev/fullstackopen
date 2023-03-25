@@ -4,6 +4,7 @@ require('dotenv').config();
 const PORT = process.env.PORT || '8080';
 const app = express();
 const Person = require('./models/person');
+const errorHandler = require('./errorHandler');
 
 // logs HTTP requests
 const requestLogger = (req, _, next) => {
@@ -23,8 +24,9 @@ const requestLogger = (req, _, next) => {
 app.use(cors());
 app.use(express.json());
 app.use(requestLogger);
+app.use(errorHandler);
 
-app.get('/info/', (_, res) => {
+app.get('/info/', async (_, res) => {
   const now = new Date();
   const formattedDate = now.toLocaleDateString('en-US', {
     year: 'numeric',
@@ -34,19 +36,16 @@ app.get('/info/', (_, res) => {
 
   const formattedTime = now.toLocaleTimeString('en-US');
 
-  const responseHtml = `
-  <!DOCTYPE html>
-  <html>
-    <head>
-      <title>Info:</title>
-    </head>
-    <body>
-      <h3>There are ${persons.length} contacts in the phonebook.</h3>
-      <h3>The current time is: ${formattedDate} at ${formattedTime}</h3>
-    </body>
-  </html>
-`;
-  res.status(200).send(responseHtml);
+  try {
+    const count = await Person.countDocuments({});
+    res.json({
+      count: `There are ${count} people in the phonebook.`,
+      formattedDate,
+      formattedTime,
+    });
+  } catch (err) {
+    next(err);
+  }
 });
 
 // GET ALL people
