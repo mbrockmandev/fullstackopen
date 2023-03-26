@@ -1,10 +1,4 @@
-# const blogSchema = new mongoose.Schema({
-#   title: String,
-#   author: String,
-#   url: String,
-#   likes: Number,
-# });
-GET http://localhost:3001/api/blogs
+GET http://localhost:3001/api/blogs/
 ###
 GET http://localhost:3001/api/blogs/642044e2c37244fa984bd733
 ###

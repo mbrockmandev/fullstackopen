@@ -1,20 +1,18 @@
 const logger = require('./logger');
 
-// logs HTTP requests
 const requestLogger = (req, _, next) => {
   logger.info('Method:', req.method);
-  logger.info('Path:  ', req.path);
-  logger.info('Body:  ', req.body);
+  logger.info('Path:', req.path);
+  logger.info('Body:', req.body);
   logger.info('---');
   next();
 };
 
-// handle unknown requests
 const unknownEndpoint = (_, res) => {
-  res.status(404).send({ error: 'unknown endpoint' });
+  // logger.info(res);
+  res.status(404).send({ error: 'Unknown Endpoint.' });
 };
 
-// handle errors -- incomplete
 const errorHandler = (err, _, res, next) => {
   logger.error(err.message);
 
