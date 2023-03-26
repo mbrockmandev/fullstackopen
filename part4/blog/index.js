@@ -2,6 +2,9 @@ const express = require('express');
 const app = express();
 const cors = require('cors');
 const mongoose = require('mongoose');
+require('dotenv').config();
+const PORT = process.env.PORT;
+const MONGO_URI = process.env.MONGO_URI;
 
 const blogSchema = new mongoose.Schema({
   title: String,
@@ -12,15 +15,23 @@ const blogSchema = new mongoose.Schema({
 
 const Blog = mongoose.model('Blog', blogSchema);
 
-const mongoUrl = 'mongodb://localhost/blogList';
-mongoose.connect(mongoUrl);
+console.log('Connecting to: MongoDB');
+mongoose.connect(MONGO_URI);
+mongoose.connection.once('open', () => {
+  console.log(
+    'Connected to:',
+    MONGO_URI,
+    '\nReadyState:',
+    mongoose.connection.readyState,
+  );
+});
 
 app.use(cors());
 app.use(express.json());
 
 app.get('/api/blogs', async (req, res) => {
   try {
-    const results = Blog.find({});
+    const results = await Blog.find({});
     res.json(results);
   } catch (err) {
     console.log(err);
@@ -36,3 +47,16 @@ app.post('/api/blogs', async (req, res) => {
     console.log(err);
   }
 });
+
+app.post('/api/blogs/multiple', async (req, res) => {
+  try {
+    const { blogs } = req.body;
+    const results = await Blog.insertMany(blogs);
+    res.json(results);
+  } catch (err) {
+    console.log('error!');
+    console.log(err);
+  }
+});
+
+app.listen(PORT, () => console.log(`Server started on ${PORT}`));

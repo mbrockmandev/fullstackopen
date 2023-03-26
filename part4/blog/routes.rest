@@ -1,0 +1,111 @@
+# const blogSchema = new mongoose.Schema({
+#   title: String,
+#   author: String,
+#   url: String,
+#   likes: Number,
+# });
+GET http://localhost:3001/api/blogs
+###
+GET http://localhost:3001/api/blogs/6420417b234c457922e59ce3
+###
+DELETE http://localhost:3001/api/blogs/id
+###
+POST http://localhost:3001/api/blogs/
+Content-Type: application/json
+
+{
+  "title": "How to make money and win friends",
+  "author": "Dale Carnegie",
+  "url": "https://www.google.com/",
+  "likes": 3
+}
+### upload multiple
+POST http://localhost:3001/api/blogs/multiple
+Content-Type: application/json
+
+{
+  "blogs": [
+    {
+      "title": "A Beginner's Guide to JavaScript",
+      "author": "John Smith",
+      "url": "https://www.example.com/beginners-guide-to-javascript",
+      "likes": 12
+    },
+    {
+      "title": "10 Tips for Writing Better Code",
+      "author": "Jane Doe",
+      "url": "https://www.example.com/10-tips-for-writing-better-code",
+      "likes": 25
+    },
+    {
+      "title": "The Future of Web Development",
+      "author": "Alex Johnson",
+      "url": "https://www.example.com/future-of-web-development",
+      "likes": 18
+    },
+    {
+      "title": "How to Build a RESTful API",
+      "author": "Sarah Lee",
+      "url": "https://www.example.com/building-a-restful-api",
+      "likes": 8
+    },
+    {
+      "title": "Introduction to React.js",
+      "author": "Mike Brown",
+      "url": "https://www.example.com/introduction-to-react-js",
+      "likes": 35
+    },
+    {
+      "title": "10 Ways to Speed Up Your Website",
+      "author": "Lisa Kim",
+      "url": "https://www.example.com/10-ways-to-speed-up-your-website",
+      "likes": 17
+    },
+    {
+      "title": "Best Practices for Node.js Development",
+      "author": "David Jones",
+      "url": "https://www.example.com/best-practices-for-node-js-development",
+      "likes": 22
+    },
+    {
+      "title": "Creating Custom WordPress Themes",
+      "author": "Emily Davis",
+      "url": "https://www.example.com/creating-custom-wordpress-themes",
+      "likes": 11
+    },
+    {
+      "title": "Introduction to Machine Learning",
+      "author": "Chris Lee",
+      "url": "https://www.example.com/introduction-to-machine-learning",
+      "likes": 29
+    },
+    {
+      "title": "How to Secure Your Web Application",
+      "author": "Brian Johnson",
+      "url": "https://www.example.com/how-to-secure-your-web-application",
+      "likes": 14
+    }
+  ]
+}
+
+### incorrect id
+GET http://localhost:3001/api/blogs/5c41c90e84d891c15dfa3431
+### malformed id
+GET http://localhost:3001/api/blogs/5c41c90e84d891c15dfa343133
+###
+PUT http://localhost:3001/api/blogs/641efc0f7b66f4f0db31f213
+Content-Type: application/json
+
+{
+  "content": "Mongoose makes use of mongo easy!",
+  "important": true
+}
+### content too short -- Validation Error
+PUT http://localhost:3001/api/blogs/641efc0f7b66f4f0db31f213
+Content-Type: application/json
+
+{
+  "content": "lol",
+  "important": true
+}
+###
