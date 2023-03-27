@@ -15,9 +15,40 @@ beforeEach(async () => {
   }
 });
 
+describe('valid entries to blog API', () => {
+  test('the id property is defined when making a Blog object', async () => {
+    const blog = new Blog({
+      title: 'Test Title',
+      author: 'Test Author',
+      url: 'http://google.com',
+      likes: 6,
+    });
+
+    const json = blog.toJSON();
+    expect(json._id).toBeUndefined();
+    expect(json.id).toBeDefined();
+  });
+});
+
+describe('HTTP request verify?', () => {
+  test('making an http post request to /api/blogs creates a new blog post', async () => {
+    const blogToBeAdded = new Blog({
+      title: 'Test Title',
+      author: 'Test Author',
+      url: 'http://google.com',
+      likes: 6,
+    });
+
+    await api
+      .post('/api/notes')
+      .expect(201)
+      .expect('Content-Type', /application\/json/);
+      
+  });
+});
+
 test('should get all notes from /api/blogs', async () => {
   const response = await api.get('/api/blogs');
-  console.log('BLOGS==', blogs);
 
   expect(response.body).toHaveLength(blogs.length);
 });

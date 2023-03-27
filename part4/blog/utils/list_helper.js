@@ -1,5 +1,3 @@
-
-
 const dummy = (blogs) => {
   if (blogs.length === 0) return 0;
 
@@ -53,7 +51,6 @@ const mostLiked = (blogs) => {
     max.likes > author.likes ? max : author,
   );
 
-  console.log(mostLikedAuthor);
   return mostLikedAuthor;
 };
 
