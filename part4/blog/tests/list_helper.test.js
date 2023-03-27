@@ -109,3 +109,5 @@ const blogs = [
     __v: 0,
   },
 ];
+
+module.exports = { blogs };
