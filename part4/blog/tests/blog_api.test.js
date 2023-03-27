@@ -1,21 +1,27 @@
 const supertest = require('supertest');
 const mongoose = require('mongoose');
 const helper = require('../utils/list_helper');
-const { blogs } = require('./list_helper.test');
 const app = require('../app');
 const api = supertest(app);
 const Blog = require('../models/blog');
 
 beforeEach(async () => {
   await Blog.deleteMany({});
-
-  for (const blog of blogs) {
-    const blogObject = new Blog(blog);
-    await blogObject.save();
-  }
+  const blogObjects = helper.initialBlogs.map((blog) => new Blog(blog));
+  const promiseArray = blogObjects.map((blog) => blog.save());
+  await Promise.all(promiseArray);
 });
 
 describe('valid entries to blog API', () => {
+  beforeEach(async () => {
+    await Blog.deleteMany({});
+
+    for (const blog of helper.initialBlogs) {
+      const blogObject = new Blog(blog);
+      await blogObject.save();
+    }
+  });
+
   test('the id property is defined when making a Blog object', async () => {
     const blog = new Blog({
       title: 'Test Title',
@@ -31,26 +37,54 @@ describe('valid entries to blog API', () => {
 });
 
 describe('HTTP request verify?', () => {
-  test('making an http post request to /api/blogs creates a new blog post', async () => {
-    const blogToBeAdded = new Blog({
-      title: 'Test Title',
-      author: 'Test Author',
-      url: 'http://google.com',
-      likes: 6,
-    });
+  beforeEach(async () => {
+    await Blog.deleteMany({});
+    const blogObjects = helper.initialBlogs.map((blog) => new Blog(blog));
+    const promiseArray = blogObjects.map((blog) => blog.save());
+    await Promise.all(promiseArray);
+  });
 
-    await api
-      .post('/api/notes')
-      .expect(201)
-      .expect('Content-Type', /application\/json/);
-      
+  test('get all blogs!', async () => {
+    const results = await api.get('/api/blogs').expect(200);
+    expect(results.body).toHaveLength(helper.initialBlogs.length);
   });
 });
 
-test('should get all notes from /api/blogs', async () => {
-  const response = await api.get('/api/blogs');
+describe('POST route and related info', () => {
+  test('a valid blog gets added', async () => {
+    const newBlog = {
+      title: 'Canonical string reduction',
+      author: 'Edsger W. Dijkstra',
+      url: 'http://www.cs.utexas.edu/~EWD/transcriptions/EWD08xx/EWD808.html',
+      likes: 12,
+    };
 
-  expect(response.body).toHaveLength(blogs.length);
+    await api
+      .post('/api/blogs')
+      .send(newBlog)
+      .expect(201)
+      .expect('Content-Type', /application\/json/);
+
+    const blogsAtEnd = await helper.blogsInDb();
+    expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length + 1);
+  });
+
+  test('if missing content, does not get added', async () => {
+    const newBlog = {
+      author: 'Edsger W. Dijkstra',
+      url: 'http://www.cs.utexas.edu/~EWD/transcriptions/EWD08xx/EWD808.html',
+      likes: 12,
+    };
+
+    await api
+      .post('/api/blogs')
+      .send(newBlog)
+      .expect(400)
+      .expect('Content-Type', /application\/json/);
+
+    const blogsAtEnd = await helper.blogsInDb();
+    expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length);
+  });
 });
 
 // close connections!
