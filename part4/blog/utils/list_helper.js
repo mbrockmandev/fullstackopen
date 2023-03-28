@@ -1,8 +1,23 @@
 const Blog = require('../models/blog');
+const User = require('../models/user');
 
 const blogsInDb = async () => {
   const blogs = await Blog.find({});
   return blogs.map((blog) => blog.toJSON());
+};
+
+const usersInDb = async () => {
+  const users = await User.find({});
+  return users.map((u) => u.toJSON());
+};
+
+const getToken = (user) => {
+  const userForToken = {
+    username: user.username,
+    id: user._id,
+  };
+
+  return jwt.sign(userForToken, process.env.SECRET);
 };
 
 const dummy = (blogs) => {
@@ -113,6 +128,8 @@ const initialBlogs = [
 ];
 
 module.exports = {
+  usersInDb,
+  getToken,
   initialBlogs,
   blogsInDb,
   dummy,

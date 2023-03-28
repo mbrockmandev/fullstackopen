@@ -14,14 +14,14 @@ beforeEach(async () => {
 
 // GET route tests
 describe('valid entries to blog API', () => {
-  beforeEach(async () => {
-    await Blog.deleteMany({});
+  // beforeEach(async () => {
+  //   await Blog.deleteMany({});
 
-    for (const blog of helper.initialBlogs) {
-      const blogObject = new Blog(blog);
-      await blogObject.save();
-    }
-  });
+  //   for (const blog of helper.initialBlogs) {
+  //     const blogObject = new Blog(blog);
+  //     await blogObject.save();
+  //   }
+  // });
 
   test('the id property is defined when making a Blog object', async () => {
     const blog = new Blog({
@@ -38,12 +38,12 @@ describe('valid entries to blog API', () => {
 });
 
 describe('HTTP request verify?', () => {
-  beforeEach(async () => {
-    await Blog.deleteMany({});
-    const blogObjects = helper.initialBlogs.map((blog) => new Blog(blog));
-    const promiseArray = blogObjects.map((blog) => blog.save());
-    await Promise.all(promiseArray);
-  });
+  // beforeEach(async () => {
+  //   await Blog.deleteMany({});
+  //   const blogObjects = helper.initialBlogs.map((blog) => new Blog(blog));
+  //   const promiseArray = blogObjects.map((blog) => blog.save());
+  //   await Promise.all(promiseArray);
+  // });
 
   test('get all blogs!', async () => {
     const results = await api.get('/api/blogs').expect(200);
@@ -167,6 +167,14 @@ describe('DELETE ROUTES HERE', () => {
 
     const blogsAtEnd = await helper.blogsInDb();
     expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length - 1);
+  });
+});
+
+// GET routes for User
+describe('GET routes for USER here', () => {
+  test('get all users', async () => {
+    const results = await api.get('/api/users').expect(200);
+    expect(results.body).toHaveLength(helper.initialBlogs.length);
   });
 });
 

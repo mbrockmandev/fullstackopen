@@ -12,7 +12,7 @@ const getTokenFrom = (req) => {
 };
 
 blogsRouter.get('/', async (req, res) => {
-  const results = await Blog.find({}).populate('user', {
+  const results = await Blog.find({}).populate('users', {
     username: 1,
     name: 1,
   });
@@ -40,8 +40,8 @@ blogsRouter.post('/', async (req, res) => {
   const blog = new Blog({
     title: body.title,
     author: body.author,
-    url: body.url,
-    likes: body.likes,
+    url: body.url || '',
+    likes: body.likes || 0,
   });
 
   const savedBlog = await blog.save();
