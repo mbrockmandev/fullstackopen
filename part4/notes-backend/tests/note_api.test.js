@@ -61,9 +61,14 @@ describe('viewing specific note', () => {
 });
 
 describe('addition of a new note', () => {
+  let token;
   beforeEach(async () => {
-    const token = helper.getToken();
-  })
+    const user = {
+      username: 'mike',
+      password: 'whatsup',
+    };
+    token = helper.getToken(user);
+  });
 
   test('succeeds with valid data', async () => {
     const newNote = {
@@ -73,6 +78,7 @@ describe('addition of a new note', () => {
 
     await api
       .post('/api/notes')
+      .set('Authorization', token)
       .send(newNote)
       .expect(201)
       .expect('Content-Type', /application\/json/);

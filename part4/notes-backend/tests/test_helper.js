@@ -1,5 +1,6 @@
 const Note = require('../models/note');
 const User = require('../models/user');
+const jwt = require('jsonwebtoken');
 
 const initialNotes = [
   {
@@ -30,8 +31,13 @@ const usersInDb = async () => {
   return users.map((user) => user.toJSON());
 };
 
-const getToken = async () => {
-  // implement token getting here
+const getToken = (user) => {
+  const userForToken = {
+    username: user.username,
+    id: user._id,
+  };
+
+  return jwt.sign(userForToken, process.env.SECRET);
 };
 
 module.exports = {
