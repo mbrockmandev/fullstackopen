@@ -1,8 +1,11 @@
 GET http://localhost:3001/api/blogs/
+
 ###
 GET http://localhost:3001/api/blogs/5a422a851b54a676234d17f7
+
 ###
-DELETE http://localhost:3001/api/blogs/642044e2c37244fa984bd733
+DELETE http://localhost:3001/api/blogs/5a422a851b54a676234d17f7
+
 ###
 POST http://localhost:3001/api/blogs/
 Content-Type: application/json
@@ -17,6 +20,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im1pa
 ### upload multiple
 POST http://localhost:3001/api/blogs/multiple
 Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im1pa2UiLCJpZCI6IjY0MjMxYmY3ZTlmZTMyODIzMDBhZDI2OSIsImlhdCI6MTY4MDAyMjcyOCwiZXhwIjoxNjgwMDMzNTI4fQ.sgPUhmZ7OL-6sMjLitfhVaLczkswzkWlL8IEI_g6JtA
 
 {
   "blogs": [
@@ -84,7 +88,7 @@ Content-Type: application/json
 }
 
 ### 
-PUT http://localhost:3001/api/blogs/642044e2c37244fa984bd733
+PUT http://localhost:3001/api/blogs/5a422a851b54a676234d17f7
 Content-Type: application/json
 
 {
@@ -112,3 +116,5 @@ Content-Type: application/json
   "username": "mike",
   "password": "12345"
 }
+### get a list of users
+GET http://localhost:3001/api/users

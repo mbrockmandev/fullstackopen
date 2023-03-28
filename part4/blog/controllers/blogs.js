@@ -31,7 +31,7 @@ blogsRouter.get('/:id', async (req, res) => {
 blogsRouter.post('/', async (req, res) => {
   const body = req.body;
   const decodedToken = jwt.verify(getTokenFrom(req), process.env.SECRET);
-  if (!decodedToken.id) {
+  if (!decodedToken || !decodedToken.id) {
     return res.status(401).json({ error: 'Invalid Token.' });
   }
 
@@ -42,6 +42,7 @@ blogsRouter.post('/', async (req, res) => {
     author: body.author,
     url: body.url || '',
     likes: body.likes || 0,
+    users: [user._id],
   });
 
   const savedBlog = await blog.save();

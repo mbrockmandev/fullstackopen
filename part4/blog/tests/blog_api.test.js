@@ -5,23 +5,14 @@ const app = require('../app');
 const api = supertest(app);
 const Blog = require('../models/blog');
 
-beforeEach(async () => {
-  await Blog.deleteMany({});
-  const blogObjects = helper.initialBlogs.map((blog) => new Blog(blog));
-  const promiseArray = blogObjects.map((blog) => blog.save());
-  await Promise.all(promiseArray);
-});
-
 // GET route tests
 describe('valid entries to blog API', () => {
-  // beforeEach(async () => {
-  //   await Blog.deleteMany({});
-
-  //   for (const blog of helper.initialBlogs) {
-  //     const blogObject = new Blog(blog);
-  //     await blogObject.save();
-  //   }
-  // });
+  beforeEach(async () => {
+    await Blog.deleteMany({});
+    const blogObjects = helper.initialBlogs.map((blog) => new Blog(blog));
+    const promiseArray = blogObjects.map((blog) => blog.save());
+    await Promise.all(promiseArray);
+  });
 
   test('the id property is defined when making a Blog object', async () => {
     const blog = new Blog({
@@ -38,12 +29,12 @@ describe('valid entries to blog API', () => {
 });
 
 describe('HTTP request verify?', () => {
-  // beforeEach(async () => {
-  //   await Blog.deleteMany({});
-  //   const blogObjects = helper.initialBlogs.map((blog) => new Blog(blog));
-  //   const promiseArray = blogObjects.map((blog) => blog.save());
-  //   await Promise.all(promiseArray);
-  // });
+  beforeEach(async () => {
+    await Blog.deleteMany({});
+    const blogObjects = helper.initialBlogs.map((blog) => new Blog(blog));
+    const promiseArray = blogObjects.map((blog) => blog.save());
+    await Promise.all(promiseArray);
+  });
 
   test('get all blogs!', async () => {
     const results = await api.get('/api/blogs').expect(200);
@@ -53,20 +44,35 @@ describe('HTTP request verify?', () => {
 
 // POST route tests
 describe('POST route and related info', () => {
-  test('a valid blog gets added', async () => {
+  let token;
+
+  beforeEach(async () => {
+    await Blog.deleteMany({});
+    const blogObjects = helper.initialBlogs.map((blog) => new Blog(blog));
+    const promiseArray = blogObjects.map((blog) => blog.save());
+    await Promise.all(promiseArray);
+
+    const user = {
+      username: 'mike',
+      password: '12345',
+    };
+    const res = await api.post('/api/login').send(user);
+    token = `Bearer ${res.body.token}`;
+  });
+
+  test('a valid blog gets added using valid info', async () => {
     const newBlog = {
       title: 'Canonical string reduction',
       author: 'Edsger W. Dijkstra',
       url: 'http://www.cs.utexas.edu/~EWD/transcriptions/EWD08xx/EWD808.html',
       likes: 12,
     };
-
     await api
       .post('/api/blogs')
+      .set('Authorization', token)
       .send(newBlog)
       .expect(201)
       .expect('Content-Type', /application\/json/);
-
     const blogsAtEnd = await helper.blogsInDb();
     expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length + 1);
   });
@@ -80,6 +86,7 @@ describe('POST route and related info', () => {
 
     await api
       .post('/api/blogs')
+      .set('Authorization', token)
       .send(newBlog)
       .expect(400)
       .expect('Content-Type', /application\/json/);
@@ -97,6 +104,7 @@ describe('POST route and related info', () => {
 
     await api
       .post('/api/blogs')
+      .set('Authorization', token)
       .send(newBlog)
       .expect(201)
       .expect('Content-Type', /application\/json/);
@@ -118,6 +126,7 @@ describe('POST route and related info', () => {
 
     await api
       .post('/api/blogs')
+      .set('Authorization', token)
       .send(newBlog)
       .expect(201)
       .expect('Content-Type', /application\/json/);
@@ -133,6 +142,22 @@ describe('POST route and related info', () => {
 
 // PUT route tests
 describe('PUT ROUTES HERE', () => {
+  let token;
+
+  beforeEach(async () => {
+    await Blog.deleteMany({});
+    const blogObjects = helper.initialBlogs.map((blog) => new Blog(blog));
+    const promiseArray = blogObjects.map((blog) => blog.save());
+    await Promise.all(promiseArray);
+    
+    const user = {
+      username: 'mike',
+      password: '12345',
+    };
+    const res = await api.post('/api/login').send(user);
+    token = `Bearer ${res.body.token}`;
+  });
+
   test('a valid blog gets updated', async () => {
     const oldBlogEntry = await api.get('/api/blogs/5a422b3a1b54a676234d17f9');
 
@@ -160,10 +185,29 @@ describe('PUT ROUTES HERE', () => {
 
 // DELETE route tests
 describe('DELETE ROUTES HERE', () => {
+  let token;
+
+  beforeEach(async () => {
+    await Blog.deleteMany({});
+    const blogObjects = helper.initialBlogs.map((blog) => new Blog(blog));
+    const promiseArray = blogObjects.map((blog) => blog.save());
+    await Promise.all(promiseArray);
+
+    const user = {
+      username: 'mike',
+      password: '12345',
+    };
+    const res = await api.post('/api/login').send(user);
+    token = `Bearer ${res.body.token}`;
+  });
+
   test('a valid blog gets deleted', async () => {
     const oldBlogEntry = await api.get('/api/blogs/5a422b3a1b54a676234d17f9');
 
-    await api.delete('/api/blogs/5a422b3a1b54a676234d17f9').expect(204);
+    await api
+      .delete('/api/blogs/5a422b3a1b54a676234d17f9')
+      .set('Authorization', token)
+      .expect(204);
 
     const blogsAtEnd = await helper.blogsInDb();
     expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length - 1);
@@ -174,7 +218,8 @@ describe('DELETE ROUTES HERE', () => {
 describe('GET routes for USER here', () => {
   test('get all users', async () => {
     const results = await api.get('/api/users').expect(200);
-    expect(results.body).toHaveLength(helper.initialBlogs.length);
+    const usersInDb = await helper.usersInDb();
+    expect(usersInDb[0].username).toBe(results.body[0].username);
   });
 });
 

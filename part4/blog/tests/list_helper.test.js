@@ -1,4 +1,5 @@
 const listHelper = require('../utils/list_helper');
+const jwt = require('jsonwebtoken');
 
 describe('total likes', () => {
   test('should be zero for an empty list', () => {
