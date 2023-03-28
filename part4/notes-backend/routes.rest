@@ -6,6 +6,7 @@ DELETE http://localhost:3001/api/notes/641f047b8ef2e579573959f2
 ###
 POST http://localhost:3001/api/notes
 Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im1pa2UiLCJpZCI6IjY0MjIzYzE0OWQ5ZmJjZDMxMDQ0ZGUxYyIsImlhdCI6MTY3OTk2NTQ5MH0.o0MA8RrOeqa15yODEpfSJ9PHQVJ_6a_9c_05Q7jtyX8
 
 {
   "content": "what's up with these!",

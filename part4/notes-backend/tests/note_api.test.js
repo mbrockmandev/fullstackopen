@@ -61,6 +61,10 @@ describe('viewing specific note', () => {
 });
 
 describe('addition of a new note', () => {
+  beforeEach(async () => {
+    const token = helper.getToken();
+  })
+
   test('succeeds with valid data', async () => {
     const newNote = {
       content: 'async/await simplifies making async calls',
