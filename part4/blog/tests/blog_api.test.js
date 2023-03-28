@@ -12,6 +12,7 @@ beforeEach(async () => {
   await Promise.all(promiseArray);
 });
 
+// GET route tests
 describe('valid entries to blog API', () => {
   beforeEach(async () => {
     await Blog.deleteMany({});
@@ -50,6 +51,7 @@ describe('HTTP request verify?', () => {
   });
 });
 
+// POST route tests
 describe('POST route and related info', () => {
   test('a valid blog gets added', async () => {
     const newBlog = {
@@ -84,6 +86,87 @@ describe('POST route and related info', () => {
 
     const blogsAtEnd = await helper.blogsInDb();
     expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length);
+  });
+
+  test('if url is missing, default to empty string', async () => {
+    const newBlog = {
+      title: 'Canonical string reduction2',
+      author: 'Edsger W. Dijkstra',
+      likes: 12,
+    };
+
+    await api
+      .post('/api/blogs')
+      .send(newBlog)
+      .expect(201)
+      .expect('Content-Type', /application\/json/);
+
+    const blogsAtEnd = await helper.blogsInDb();
+    const newBlogEntry = await blogsAtEnd.find(
+      (blog) => blog.title === 'Canonical string reduction2',
+    );
+
+    expect(newBlogEntry.url).toStrictEqual('');
+  });
+
+  test('if likes property is missing, default to 0', async () => {
+    const newBlog = {
+      title: 'Canonical string reduction2',
+      author: 'Edsger W. Dijkstra',
+      url: 'http://www.cs.utexas.edu/~EWD/transcriptions/EWD08xx/EWD808.html',
+    };
+
+    await api
+      .post('/api/blogs')
+      .send(newBlog)
+      .expect(201)
+      .expect('Content-Type', /application\/json/);
+
+    const blogsAtEnd = await helper.blogsInDb();
+    const newBlogEntry = await blogsAtEnd.find(
+      (blog) => blog.title === 'Canonical string reduction2',
+    );
+
+    expect(newBlogEntry.likes).toStrictEqual(0);
+  });
+});
+
+// PUT route tests
+describe('PUT ROUTES HERE', () => {
+  test('a valid blog gets updated', async () => {
+    const oldBlogEntry = await api.get('/api/blogs/5a422b3a1b54a676234d17f9');
+
+    const newBlog = {
+      title: 'Canonical string reduction 222',
+      author: 'Edsger W. Dijkstra',
+      url: 'http://www.cs.utexas.edu/~EWD/transcriptions/EWD08xx/EWD808.html',
+      likes: 12,
+    };
+
+    await api
+      .put('/api/blogs/5a422b3a1b54a676234d17f9')
+      .send(newBlog)
+      .expect(200)
+      .expect('Content-Type', /application\/json/);
+
+    const blogsAtEnd = await helper.blogsInDb();
+    const updatedBlogEntry = await blogsAtEnd.find(
+      (blog) => blog.title === 'Canonical string reduction 222',
+    );
+    expect(oldBlogEntry.body.title).not.toStrictEqual(updatedBlogEntry.title);
+    expect(updatedBlogEntry.title).toStrictEqual(newBlog.title);
+  });
+});
+
+// DELETE route tests
+describe('DELETE ROUTES HERE', () => {
+  test('a valid blog gets deleted', async () => {
+    const oldBlogEntry = await api.get('/api/blogs/5a422b3a1b54a676234d17f9');
+
+    await api.delete('/api/blogs/5a422b3a1b54a676234d17f9').expect(204);
+
+    const blogsAtEnd = await helper.blogsInDb();
+    expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length - 1);
   });
 });
 

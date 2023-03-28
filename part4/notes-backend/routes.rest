@@ -4,12 +4,13 @@ GET http://localhost:3001/api/notes/641efc0f7b66f4f0db31f213
 ###
 DELETE http://localhost:3001/api/notes/641f047b8ef2e579573959f2
 ###
-POST http://localhost:3001/api/notes/
+POST http://localhost:3001/api/notes
 Content-Type: application/json
 
 {
-  "content": "Mongoose makes use of mongo easy!",
-  "important": true
+  "content": "what's up with these!",
+  "important": true,
+  "userId": "642220eddc1d6fe3a91c52ef"
 }
 ### incorrect id
 GET http://localhost:3001/api/notes/5c41c90e84d891c15dfa3431
@@ -32,3 +33,23 @@ Content-Type: application/json
   "important": true
 }
 ###
+GET http://localhost:3001/api/users
+###
+POST http://localhost:3001/api/users
+Content-Type: application/json
+
+{
+  "username": "mike",
+  "password": "whatsup"
+}
+
+### -- not functional delete yet 
+DELETE http://localhost:3001/api/users/642220eddc1d6fe3a91c52ec
+###
+POST http://localhost:3001/api/login
+Content-Type: application/json
+
+{
+  "username": "mike",
+  "password": "whatsup"
+}
