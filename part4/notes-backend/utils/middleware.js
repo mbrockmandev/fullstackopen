@@ -10,11 +10,6 @@ const requestLogger = (req, _, next) => {
   next();
 };
 
-// handle unknown requests
-const unknownEndpoint = (_, res) => {
-  res.status(404).send({ error: 'unknown endpoint' });
-};
-
 // handle errors -- incomplete
 const errorHandler = (err, _, res, next) => {
   logger.error(err.message);
@@ -45,7 +40,6 @@ const tokenExtractor = (req, res, next) => {
 
 module.exports = {
   requestLogger,
-  unknownEndpoint,
   errorHandler,
   tokenExtractor,
 };

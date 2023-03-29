@@ -1,3 +1,10 @@
+const supertest = require('supertest');
+const mongoose = require('mongoose');
+const helper = require('../utils/list_helper');
+const app = require('../app');
+const api = supertest(app);
+const User = require('../models/user');
+
 // GET routes for User
 describe('GET routes for USER here', () => {
   test('get all users', async () => {
