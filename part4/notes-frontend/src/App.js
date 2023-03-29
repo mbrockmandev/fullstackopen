@@ -4,6 +4,7 @@ import Note from './components/Note';
 import noteService from './services/notes';
 import Notification from './components/Notification';
 import Footer from './components/Footer';
+import loginService from './services/login';
 
 const App = () => {
   const [notes, setNotes] = useState([]);
@@ -11,6 +12,9 @@ const App = () => {
   const [showAll, setShowAll] = useState(true);
   const [notificationMessage, setNotificationMessage] = useState(null);
   const [notificationType, setNotificationType] = useState('');
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [user, setUser] = useState(null);
 
   useEffect(() => {
     noteService
@@ -26,8 +30,59 @@ const App = () => {
       });
   }, []);
 
-  const addNote = (event) => {
-    event.preventDefault();
+  const handleLogin = async (e) => {
+    console.log('user.name:', user.name);
+    e.preventDefault();
+    try {
+      const user = await loginService.login({ username, password });
+      setUser(user);
+      setUsername('');
+      setPassword('');
+    } catch (error) {
+      showNotificationMessage('Incorrect username/password.');
+    }
+  };
+
+  const loginForm = () => {
+    return (
+      <form onSubmit={handleLogin}>
+        <div>
+          Username:{' '}
+          <input
+            type='text'
+            value={username}
+            name='username'
+            onChange={({ target }) => setUsername(target.value)}
+          />
+        </div>
+        <div>
+          Password:{' '}
+          <input
+            type='text'
+            value={password}
+            name='password'
+            onChange={({ target }) => setPassword(target.value)}
+          />
+        </div>
+        <button type='submit'>Login</button>
+      </form>
+    );
+  };
+
+  const noteForm = () => {
+    return (
+      <form onSubmit={addNote}>
+        <input
+          value={newNote}
+          onChange={handleNoteChange}
+        />
+        <button type='submit'>Save</button>
+      </form>
+    );
+  };
+
+  const addNote = (e) => {
+    e.preventDefault();
     const noteObject = {
       content: newNote,
       important: Math.random() < 0.5,
@@ -79,8 +134,8 @@ const App = () => {
     }, duration);
   };
 
-  const handleNoteChange = (event) => {
-    setNewNote(event.target.value);
+  const handleNoteChange = (e) => {
+    setNewNote(e.target.value);
   };
 
   const notesToShow = showAll
@@ -94,6 +149,16 @@ const App = () => {
         message={notificationMessage}
         type={notificationType}
       />
+
+      {!user && loginForm()}
+
+      {user && (
+        <div>
+          <p>{user.name} logged in</p>
+          {noteForm()}
+        </div>
+      )}
+
       <div>
         <button onClick={() => setShowAll(!showAll)}>
           show {showAll ? 'important' : 'all'}
