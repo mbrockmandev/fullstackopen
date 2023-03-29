@@ -6,15 +6,19 @@ const api = supertest(app);
 const Blog = require('../models/blog');
 const User = require('../models/user');
 
-// GET route tests
-describe('valid entries to blog API', () => {
-  beforeEach(async () => {
-    await Blog.deleteMany({});
-    const blogObjects = helper.initialBlogs.map((blog) => new Blog(blog));
-    const promiseArray = blogObjects.map((blog) => blog.save());
-    await Promise.all(promiseArray);
-  });
+beforeEach(async () => {
+  // Create a root user
+  await User.deleteMany({});
 
+  // Create blogs without user
+  await Blog.deleteMany({});
+  const noteObjects = helper.initialBlogs.map((blog) => new Blog(blog));
+  const promiseArray = noteObjects.map((blog) => blog.save());
+  await Promise.all(promiseArray);
+});
+
+// validation
+describe('validate properties', () => {
   test('the id property is defined when making a Blog object', async () => {
     const blog = new Blog({
       title: 'Test Title',
@@ -29,16 +33,28 @@ describe('valid entries to blog API', () => {
   });
 });
 
+// GET route tests
 describe('HTTP request verify?', () => {
+  let token;
   beforeEach(async () => {
     await Blog.deleteMany({});
     const blogObjects = helper.initialBlogs.map((blog) => new Blog(blog));
     const promiseArray = blogObjects.map((blog) => blog.save());
     await Promise.all(promiseArray);
+
+    const user = {
+      username: 'mike',
+      password: '12345',
+    };
+    const res = await api.post('/api/login').send(user);
+    token = `Bearer ${res.body.token}`;
   });
 
   test('get all blogs!', async () => {
-    const results = await api.get('/api/blogs').expect(200);
+    const results = await api
+      .get('/api/blogs')
+      .set('Authorization', `Bearer ${token}`)
+      .expect(200);
     expect(results.body).toHaveLength(helper.initialBlogs.length);
   });
 });
@@ -171,6 +187,7 @@ describe('PUT ROUTES HERE', () => {
 
     await api
       .put('/api/blogs/5a422b3a1b54a676234d17f9')
+      .set('Authorization', `Bearer ${token}`)
       .send(newBlog)
       .expect(200)
       .expect('Content-Type', /application\/json/);

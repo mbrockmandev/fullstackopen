@@ -1,15 +1,18 @@
 GET http://localhost:3001/api/blogs/
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im1pa2UiLCJpZCI6IjY0MjM5MTI1Yjc5YWU1YTEzMjBhZWRmZiIsImlhdCI6MTY4MDA1MjUxOSwiZXhwIjoxNjgwMDYzMzE5fQ.mnuMEy4aBw8i3Pdp9tKGCC0cVpipZwuDoIHfgH1pAWg
 
 ###
-GET http://localhost:3001/api/blogs/5a422a851b54a676234d17f7
+GET http://localhost:3001/api/blogs/64239162b79ae5a1320aee06
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im1pa2UiLCJpZCI6IjY0MjM5MTI1Yjc5YWU1YTEzMjBhZWRmZiIsImlhdCI6MTY4MDA1MjUxOSwiZXhwIjoxNjgwMDYzMzE5fQ.mnuMEy4aBw8i3Pdp9tKGCC0cVpipZwuDoIHfgH1pAWg
 
 ###
-DELETE http://localhost:3001/api/blogs/5a422a851b54a676234d17f7
+DELETE http://localhost:3001/api/blogs/64239162b79ae5a1320aee06
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im1pa2UiLCJpZCI6IjY0MjM5MTI1Yjc5YWU1YTEzMjBhZWRmZiIsImlhdCI6MTY4MDA1MjUxOSwiZXhwIjoxNjgwMDYzMzE5fQ.mnuMEy4aBw8i3Pdp9tKGCC0cVpipZwuDoIHfgH1pAWg
 
 ###
 POST http://localhost:3001/api/blogs/
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im1pa2UiLCJpZCI6IjY0MjMxYmY3ZTlmZTMyODIzMDBhZDI2OSIsImlhdCI6MTY4MDAyMjcyOCwiZXhwIjoxNjgwMDMzNTI4fQ.sgPUhmZ7OL-6sMjLitfhVaLczkswzkWlL8IEI_g6JtA
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im1pa2UiLCJpZCI6IjY0MjM5MTI1Yjc5YWU1YTEzMjBhZWRmZiIsImlhdCI6MTY4MDA1MjUxOSwiZXhwIjoxNjgwMDYzMzE5fQ.mnuMEy4aBw8i3Pdp9tKGCC0cVpipZwuDoIHfgH1pAWg
 
 {
   "title": "How to make money and win friends",
@@ -20,7 +23,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im1pa
 ### upload multiple
 POST http://localhost:3001/api/blogs/multiple
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im1pa2UiLCJpZCI6IjY0MjMxYmY3ZTlmZTMyODIzMDBhZDI2OSIsImlhdCI6MTY4MDAyMjcyOCwiZXhwIjoxNjgwMDMzNTI4fQ.sgPUhmZ7OL-6sMjLitfhVaLczkswzkWlL8IEI_g6JtA
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im1pa2UiLCJpZCI6IjY0MjM5MTI1Yjc5YWU1YTEzMjBhZWRmZiIsImlhdCI6MTY4MDA1MjUxOSwiZXhwIjoxNjgwMDYzMzE5fQ.mnuMEy4aBw8i3Pdp9tKGCC0cVpipZwuDoIHfgH1pAWg
 
 {
   "blogs": [
@@ -90,6 +93,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im1pa
 ### 
 PUT http://localhost:3001/api/blogs/5a422a851b54a676234d17f7
 Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im1pa2UiLCJpZCI6IjY0MjM5MTI1Yjc5YWU1YTEzMjBhZWRmZiIsImlhdCI6MTY4MDA1MjUxOSwiZXhwIjoxNjgwMDYzMzE5fQ.mnuMEy4aBw8i3Pdp9tKGCC0cVpipZwuDoIHfgH1pAWg
 
 {
   "title": "How to Secure Your Web Application",
