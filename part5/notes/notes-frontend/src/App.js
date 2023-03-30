@@ -5,6 +5,7 @@ import Notification from './components/Notification';
 import Footer from './components/Footer';
 import noteService from './services/notes';
 import loginService from './services/login';
+import LoginForm from './components/LoginForm';
 
 const App = () => {
   // notes
@@ -55,36 +56,11 @@ const App = () => {
     }
   };
 
-  const loginForm = () => {
-    return (
-      <form onSubmit={handleLogin}>
-        <div>
-          Username:{' '}
-          <input
-            type='text'
-            value={username}
-            name='username'
-            onChange={({ target }) => setUsername(target.value)}
-          />
-        </div>
-        <div>
-          Password:{' '}
-          <input
-            type='text'
-            value={password}
-            name='password'
-            onChange={({ target }) => setPassword(target.value)}
-          />
-        </div>
-        <button type='submit'>Login</button>
-      </form>
-    );
-  };
-
   const noteForm = () => {
     return (
       <form onSubmit={addNote}>
         <input
+          className='input'
           value={newNote}
           onChange={handleNoteChange}
         />
@@ -155,44 +131,55 @@ const App = () => {
     : notes.filter((note) => note.important === true);
 
   return (
-    <div>
-      <h1>Notes</h1>
-      <Notification
-        message={notificationMessage}
-        type={notificationType}
-      />
-
-      {!user && loginForm()}
-
-      {user && (
-        <div>
-          <p>{user.username} logged in</p>
-          {noteForm()}
-        </div>
-      )}
-
-      <div>
-        <button onClick={() => setShowAll(!showAll)}>
-          show {showAll ? 'important' : 'all'}
-        </button>
-      </div>
-      <ul>
-        {notesToShow.map((note) => (
-          <Note
-            key={note.id}
-            note={note}
-            toggleImportance={() => toggleImportanceOf(note.id)}
-          />
-        ))}
-      </ul>
-      <form onSubmit={addNote}>
-        <input
-          value={newNote}
-          onChange={handleNoteChange}
+    <div className='app'>
+      <div className='header'>
+        <h1>Notes</h1>
+        <Notification
+          message={notificationMessage}
+          type={notificationType}
         />
-        <button type='submit'>save</button>
-      </form>
-      <Footer />
+
+        {!user && (
+          <LoginForm
+            handleLogin={handleLogin}
+            username={username}
+            setUsername={setUsername}
+            password={password}
+            setPassword={setPassword}
+          />
+        )}
+
+        {user && (
+          <div className='user'>
+            <p>{user.username} logged in</p>
+            {noteForm()}
+          </div>
+        )}
+
+        <div>
+          <button onClick={() => setShowAll(!showAll)}>
+            show {showAll ? 'important' : 'all'}
+          </button>
+        </div>
+        <ul className='note-container'>
+          {notesToShow.map((note) => (
+            <Note
+              className='note'
+              key={note.id}
+              note={note}
+              toggleImportance={() => toggleImportanceOf(note.id)}
+            />
+          ))}
+        </ul>
+        <form onSubmit={addNote}>
+          <input
+            value={newNote}
+            onChange={handleNoteChange}
+          />
+          <button type='submit'>save</button>
+        </form>
+        <Footer />
+      </div>
     </div>
   );
 };
