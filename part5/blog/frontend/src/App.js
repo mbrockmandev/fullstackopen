@@ -2,13 +2,14 @@ import { useState, useEffect } from 'react';
 import Blog from './components/Blog';
 import LoginForm from './components/LoginForm';
 import blogService from './services/blogs';
-import loginService from './services/users';
+import loginService from './services/login';
+import userService from './services/users';
 
 const App = () => {
   const [blogs, setBlogs] = useState([]);
 
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
+  const [username, setUsername] = useState('mike');
+  const [password, setPassword] = useState('12345');
   const [user, setUser] = useState(null);
 
   useEffect(() => {
@@ -30,6 +31,7 @@ const App = () => {
       const user = await loginService.login({ username, password });
       // window.localStorage.setItem('blogAppUser', JSON.stringify(user));
       blogService.setToken(user.token);
+      console.log('TESTING');
       console.log('user:', user);
       setUser(user);
       setUsername('');
