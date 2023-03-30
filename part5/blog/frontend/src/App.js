@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import './App.css';
-import Blog from './components/Blog';
-import AddBlogForm from './components/AddBlogForm';
+import BlogList from './components/BlogList';
 import LoginForm from './components/LoginForm';
 import blogService from './services/blogs';
 import loginService from './services/login';
@@ -64,7 +63,7 @@ const App = () => {
       const user = await loginService.login({ username, password });
       window.localStorage.setItem('blogAppUser', JSON.stringify(user));
       blogService.setToken(user.token);
-      const message = `${user.username} logged in!"`;
+      const message = `${user.username} logged in!`;
       showNotification(message, 'success');
       setUser(user);
       setUsername('');
@@ -92,37 +91,27 @@ const App = () => {
     }, duration);
   };
 
-  if (!user) {
-    return (
-      <>
-        <Notification
-          message={notificationMessage}
-          type={notificationType}
-        />
-        <LoginForm
-          username={username}
-          setUsername={setUsername}
-          password={password}
-          setPassword={setPassword}
-          handleLogin={handleLogin}
-        />
-      </>
-    );
-  } else {
-    return (
-      <div>
-        <Notification
-          message={notificationMessage}
-          type={notificationType}
-        />
-        <h2>blogs</h2>
-        <p>
-          {user.username} is Logged In.{' '}
-          <button onClick={handleLogout}>Logout</button>
-        </p>
-
-        {user && (
-          <AddBlogForm
+  return (
+    <div>
+      <Notification
+        message={notificationMessage}
+        type={notificationType}
+      />
+      {user === null ? (
+        <>
+          <LoginForm
+            username={username}
+            setUsername={setUsername}
+            password={password}
+            setPassword={setPassword}
+            handleLogin={handleLogin}
+          />
+        </>
+      ) : (
+        <>
+          <BlogList
+            handleLogout={handleLogout}
+            user={user}
             title={title}
             setTitle={setTitle}
             author={author}
@@ -130,18 +119,12 @@ const App = () => {
             url={url}
             setUrl={setUrl}
             handleAddBlog={handleAddBlog}
+            blogs={blogs}
           />
-        )}
-
-        {blogs.map((blog) => (
-          <Blog
-            key={`${blog.id}_${blog.title}`}
-            blog={blog}
-          />
-        ))}
-      </div>
-    );
-  }
+        </>
+      )}
+    </div>
+  );
 };
 
 export default App;
