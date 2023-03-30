@@ -3,7 +3,6 @@ import Blog from './components/Blog';
 import LoginForm from './components/LoginForm';
 import blogService from './services/blogs';
 import loginService from './services/login';
-import userService from './services/users';
 
 const App = () => {
   const [blogs, setBlogs] = useState([]);
@@ -13,32 +12,33 @@ const App = () => {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
-    blogService.getAll().then((blogs) => setBlogs(blogs));
-  }, []);
-
-  useEffect(() => {
-    // const loggedInUserJSON = window.localStorage.getItem('blogAppUser');
-    // if (loggedInUserJSON !== undefined) {
-    //   const user = JSON.parse(loggedInUserJSON);
-    //   setUser(user);
-    //   blogService.setToken(user.token);
-    // }
+    const loggedInUserJSON = window.localStorage.getItem('blogAppUser');
+    if (loggedInUserJSON) {
+      const user = JSON.parse(loggedInUserJSON);
+      setUser(user);
+      blogService.setToken(user.token);
+      blogService.getAll().then((blogs) => setBlogs(blogs));
+    }
   }, []);
 
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
       const user = await loginService.login({ username, password });
-      // window.localStorage.setItem('blogAppUser', JSON.stringify(user));
+      window.localStorage.setItem('blogAppUser', JSON.stringify(user));
       blogService.setToken(user.token);
-      console.log('TESTING');
-      console.log('user:', user);
       setUser(user);
       setUsername('');
       setPassword('');
     } catch (error) {
       console.log(error);
     }
+  };
+
+  const handleLogout = (e) => {
+    e.preventDefault();
+    setUser(null);
+    window.localStorage.removeItem('blogAppUser');
   };
 
   if (!user) {
@@ -55,6 +55,10 @@ const App = () => {
     return (
       <div>
         <h2>blogs</h2>
+        <p>
+          {user.username} is Logged In.{' '}
+          <button onClick={handleLogout}>Logout</button>
+        </p>
 
         {blogs.map((blog) => (
           <Blog
