@@ -1,17 +1,20 @@
 import { useState, useEffect } from 'react';
 import './App.css';
 import Note from './components/Note';
-import noteService from './services/notes';
 import Notification from './components/Notification';
 import Footer from './components/Footer';
+import noteService from './services/notes';
 import loginService from './services/login';
 
 const App = () => {
+  // notes
   const [notes, setNotes] = useState([]);
   const [newNote, setNewNote] = useState('a new note...');
   const [showAll, setShowAll] = useState(true);
+  // notifications
   const [notificationMessage, setNotificationMessage] = useState(null);
   const [notificationType, setNotificationType] = useState('');
+  // users
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [user, setUser] = useState(null);
@@ -23,18 +26,27 @@ const App = () => {
         setNotes(initialNotes);
       })
       .catch((error) => {
-        showNotificationMessage(
-          `You need to look into why you couldn't GET: ${error.message}`,
-        );
+        showNotificationMessage(`Error: ${error.message}`);
         setNotificationType('error');
       });
   }, []);
 
+  useEffect(() => {
+    const loggedUserJSON = window.localStorage.getItem('loggedNoteAppUser');
+    if (loggedUserJSON) {
+      const user = JSON.parse(loggedUserJSON);
+      setUser(user);
+      noteService.setToken(user.token);
+    }
+  }, []);
+
   const handleLogin = async (e) => {
-    console.log('user.name:', user.name);
     e.preventDefault();
     try {
       const user = await loginService.login({ username, password });
+      window.localStorage.setItem('loggedNoteAppUser', JSON.stringify(user));
+      noteService.setToken(user.token);
+      console.log('user:', user);
       setUser(user);
       setUsername('');
       setPassword('');
@@ -154,7 +166,7 @@ const App = () => {
 
       {user && (
         <div>
-          <p>{user.name} logged in</p>
+          <p>{user.username} logged in</p>
           {noteForm()}
         </div>
       )}
