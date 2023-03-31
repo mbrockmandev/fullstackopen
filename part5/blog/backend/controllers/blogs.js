@@ -58,6 +58,14 @@ blogsRouter.put('/:id', async (req, res) => {
   res.json(result);
 });
 
+blogsRouter.put('/multiple', async (req, res) => {
+  const { blogs } = req.body;
+
+  const result = await Blog.updateMany(blogs, { new: true });
+
+  res.json(result);
+});
+
 blogsRouter.delete('/:id', async (req, res) => {
   const token = req.token;
   const decodedToken = jwt.verify(token, process.env.SECRET);
