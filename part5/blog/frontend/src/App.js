@@ -23,6 +23,7 @@ const App = () => {
   const [title, setTitle] = useState('');
   const [author, setAuthor] = useState('');
   const [url, setUrl] = useState('');
+  const [likes, setLikes] = useState(0);
 
   // notifications
   const [notificationMessage, setNotificationMessage] = useState(null);
@@ -95,6 +96,10 @@ const App = () => {
     }, duration);
   };
 
+  const handleLike = (e) => {
+    console.log('liked!');
+  };
+
   return (
     <div className='app-container'>
       <Notification
@@ -131,6 +136,7 @@ const App = () => {
               handleLogout={handleLogout}
               handleAddBlog={handleAddBlog}
               blogs={blogs}
+              handleLike={handleLike}
             />
           </div>
         </div>

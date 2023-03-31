@@ -4,7 +4,7 @@ const User = require('../models/user');
 const jwt = require('jsonwebtoken');
 
 blogsRouter.get('/', async (req, res) => {
-  const results = await Blog.find({}).populate('users', {
+  const results = await Blog.find({}).populate('user', {
     username: 1,
     name: 1,
   });
@@ -33,7 +33,7 @@ blogsRouter.post('/', async (req, res) => {
     author: body.author,
     url: body.url || '',
     likes: body.likes || 0,
-    users: [user._id],
+    user: user._id,
   });
 
   const savedBlog = await blog.save();
@@ -72,7 +72,7 @@ blogsRouter.delete('/:id', async (req, res) => {
   console.log('blogToBeDeleted:', blogToBeDeleted);
   console.log('user:', user);
 
-  if (user._id.toString() !== blogToBeDeleted.users[0]._id.toString()) {
+  if (user._id.toString() !== blogToBeDeleted.user._id.toString()) {
     res.status(401).json({ error: 'Unauthorized access.' });
   }
 
