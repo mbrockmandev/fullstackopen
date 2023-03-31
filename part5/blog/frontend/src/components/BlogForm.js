@@ -1,18 +1,23 @@
-import { useState } from 'react';
-
-const BlogForm = ({ handleAddBlog }) => {
-  const [newBlog, setNewBlog] = useState(null);
-
+const BlogForm = ({
+  handleAddBlog,
+  setTitle,
+  setAuthor,
+  setUrl,
+  title,
+  author,
+  url,
+}) => {
   const addBlog = (e) => {
     e.preventDefault();
     handleAddBlog({
-      title: newBlog.title,
-      author: newBlog.author,
-      url: newBlog.url,
-      likes: newBlog.likes,
+      title: title,
+      author: author,
+      url: url,
     });
 
-    setNewBlog(null);
+    setTitle('');
+    setAuthor('');
+    setUrl('');
   };
 
   return (
@@ -22,26 +27,20 @@ const BlogForm = ({ handleAddBlog }) => {
         <p>Title:</p>
         <input
           type='text'
-          value={newBlog.title}
+          onChange={(e) => setTitle(e.target.value)}
           name='title'
         />
         <p>Author:</p>
         <input
           type='text'
-          value={newBlog.author}
+          onChange={(e) => setAuthor(e.target.value)}
           name='author'
         />
         <p>URL:</p>
         <input
           type='text'
-          value={newBlog.url}
+          onChange={(e) => setUrl(e.target.value)}
           name='url'
-        />
-        <p>Likes:</p>
-        <input
-          type='number'
-          value={newBlog.likes}
-          name='likes'
         />
         <button type='submit'>Save New</button>
       </div>

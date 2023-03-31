@@ -38,17 +38,15 @@ const App = () => {
     }
   }, []);
 
-  const handleAddBlog = async (e) => {
-    e.preventDefault();
+  const handleAddBlog = async () => {
     try {
       const newBlog = {
         title,
         author,
         url,
       };
-      console.log('newBlog:', newBlog);
 
-      blogFormRef.current.toggleVisibility();
+      // blogFormRef.current.toggleVisibility();
       await blogService.create(newBlog);
       setBlogs([...blogs, newBlog]);
       const message = `Successfully added "${newBlog.title}!"`;
@@ -105,29 +103,36 @@ const App = () => {
       />
       {!user && (
         <div className='login-form-container'>
-          <Togglable buttonLabel='Login'>
-            <LoginForm
-              username={username}
-              setUsername={setUsername}
-              password={password}
-              setPassword={setPassword}
-              handleLogin={handleLogin}
-            />
-          </Togglable>
+          <LoginForm
+            username={username}
+            setUsername={setUsername}
+            password={password}
+            setPassword={setPassword}
+            handleLogin={handleLogin}
+          />
         </div>
       )}
       {user && (
         <div>
-          {
-            <div className='blog-list-container'>
-              <BlogList
-                username={username}
-                handleLogout={handleLogout}
-                handleAddBlog={handleAddBlog}
-                blogs={blogs}
-              />
-            </div>
-          }
+          <Togglable buttonLabel='Add New Blog'>
+            <BlogForm
+              handleAddBlog={handleAddBlog}
+              setTitle={setTitle}
+              setAuthor={setAuthor}
+              setUrl={setUrl}
+              title={title}
+              author={author}
+              url={url}
+            />
+          </Togglable>
+          <div className='blog-list-container'>
+            <BlogList
+              username={username}
+              handleLogout={handleLogout}
+              handleAddBlog={handleAddBlog}
+              blogs={blogs}
+            />
+          </div>
         </div>
       )}
     </div>
