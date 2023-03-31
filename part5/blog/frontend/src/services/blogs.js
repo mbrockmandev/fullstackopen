@@ -1,52 +1,45 @@
 import axios from 'axios';
 const baseUrl = '/api/blogs';
 
-let token = null;
-
-const setToken = (newToken) => {
-  token = `Bearer ${newToken}`;
-};
-
-const getToken = () => {
-  return token;
-};
-
-const getAll = async () => {
+const getAll = async (token) => {
   const config = {
-    headers: { Authorization: token },
+    headers: { Authorization: `Bearer ${token}` },
   };
   const res = await axios.get(baseUrl, config);
   return res.data;
 };
 
-const getBlogById = async (id) => {
+const getBlogById = async (id, token) => {
   const config = {
-    headers: { Authorization: token },
+    headers: { Authorization: `Bearer ${token}` },
   };
   const res = await axios.get(`${baseUrl}/${id}`, config);
   return res.data;
 };
 
-const create = async (newBlog) => {
+const create = async (newBlog, token) => {
   const config = {
-    headers: { Authorization: token },
+    headers: { Authorization: `Bearer ${token}` },
   };
   const res = await axios.post(baseUrl, newBlog, config);
   return res.data;
 };
 
-const update = async (id, newBlog) => {
+const update = async (id, data, token) => {
   const config = {
-    headers: { Authorization: token },
+    headers: { Authorization: `Bearer ${token}` },
   };
-  const res = await axios.put(`${baseUrl}/${id}`, newBlog, config);
+  const res = await axios.put(`${baseUrl}/${id}`, data, config);
   return res.data;
 };
 
-// const like = async (id, newBlog) => {
-//   const res = await axios.put(`${baseUrl}/${id}`, newBlog);
-//   return res.data;
-// };
+const removeBlog = async (id, token) => {
+  const config = {
+    headers: { Authorization: `Bearer ${token}` },
+  };
+  const res = await axios.delete(`${baseUrl}/${id}`, config);
+  return res.data;
+};
 
 // eslint-disable-next-line import/no-anonymous-default-export
-export default { getAll, getBlogById, setToken, getToken, create, update };
+export default { getAll, getBlogById, create, update, removeBlog };

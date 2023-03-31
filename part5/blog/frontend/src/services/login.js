@@ -6,4 +6,12 @@ const login = async (credentials) => {
   return res.data;
 };
 
-export default { login };
+const getCredentials = async (token) => {
+  const config = {
+    headers: { Authorization: `Bearer ${token}` },
+  };
+  const res = await axios.get(`${baseUrl}/getCredentials`, config);
+  return res.data;
+};
+
+export default { login, getCredentials };

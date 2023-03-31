@@ -7,8 +7,9 @@ const BlogForm = ({
   author,
   url,
 }) => {
-  const addBlog = (e) => {
+  const addBlog = async (e) => {
     e.preventDefault();
+
     handleAddBlog({
       title: title,
       author: author,

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import blogService from '../services/blogs';
 
-const Blog = ({ blog, token }) => {
+const Blog = ({ blog, token, onDelete }) => {
   const [detailsVisibility, setDetailsVisibility] = useState(false);
   const [likes, setLikes] = useState(blog.likes);
 
@@ -17,6 +17,8 @@ const Blog = ({ blog, token }) => {
   const toggleDetails = (e) => {
     e.preventDefault();
 
+    
+
     if (!!detailsVisibility) {
       e.target.innerText = 'View Details';
     } else {
@@ -31,10 +33,20 @@ const Blog = ({ blog, token }) => {
       const data = {
         likes: incrementedLikes,
       };
-      const token = blogService.getToken();
       const res = await blogService.update(`${blog.id}`, data, token);
-      const updatedBlog = res.data;
-      setLikes(updatedBlog.likes);
+      setLikes(res.likes);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleDelete = async () => {
+    try {
+      const blogToBeDeleted = blog;
+      if (window.confirm(`Delete ${blog.title} by ${blog.author}?`)) {
+        await blogService.removeBlog(`${blog.id}`, token);
+        onDelete(blog.id, blogToBeDeleted);
+      }
     } catch (error) {
       console.log(error);
     }
@@ -56,6 +68,8 @@ const Blog = ({ blog, token }) => {
               Likes: {likes} <button onClick={handleLike}>Like?</button>
             </p>
             {blog.user.username && <p>User: {blog.user.username}</p>}
+
+            <button onClick={handleDelete}>Delete</button>
           </div>
         )}
       </div>

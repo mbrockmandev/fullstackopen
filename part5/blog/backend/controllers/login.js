@@ -35,18 +35,28 @@ const checkToken = (req, res, next) => {
   }
 
   const token = auth.substring(7);
-  try {
-    const decodedToken = jwt.verify(token, process.env.SECRET);
-    req.token = token;
-    req.user = decodedToken;
-    next();
-  } catch (error) {
-    return res.status(401).json({ error: 'Invalid Token.' });
-  }
+
+  const decodedToken = jwt.verify(token, process.env.SECRET);
+  req.token = token;
+  req.user = decodedToken;
+  next();
 };
 
 loginRouter.get('/checkToken', checkToken, async (req, res) => {
   res.status(200).json({ error: false });
+});
+
+loginRouter.get('/getCredentials', async (req, res) => {
+  const auth = req.get('authorization');
+
+  if (!auth || !auth.toLowerCase().startsWith('bearer ')) {
+    return res.status(401).json({ error: 'Invalid/Missing Token.' });
+  }
+  const token = auth.substring(7);
+  const decodedToken = jwt.verify(token, process.env.SECRET);
+  req.token = token;
+  req.user = decodedToken;
+  res.status(200).json({ user: req.user, token: req.token });
 });
 
 module.exports = loginRouter;

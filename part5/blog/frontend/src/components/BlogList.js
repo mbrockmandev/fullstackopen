@@ -1,6 +1,24 @@
+import { useState, useEffect } from 'react';
 import Blog from './Blog';
 
-const BlogList = ({ username, handleLogout, blogs }) => {
+const BlogList = ({
+  username,
+  handleLogout,
+  blogs,
+  token,
+  postDeleteNotification,
+}) => {
+  const [blogList, setBlogList] = useState(blogs);
+
+  useEffect(() => {
+    setBlogList(blogs);
+  }, [blogs]);
+
+  const handleDeleteBlog = (id, blogToBeDeleted) => {
+    setBlogList(blogList.filter((blog) => blog.id !== id));
+    postDeleteNotification(blogToBeDeleted);
+  };
+
   return (
     <div>
       <h2>blogs</h2>
@@ -9,10 +27,12 @@ const BlogList = ({ username, handleLogout, blogs }) => {
         <button onClick={handleLogout}>Logout</button>
       </p>
 
-      {blogs.map((blog) => (
+      {blogList.map((blog) => (
         <Blog
           key={`${blog.id}_${blog.title}`}
           blog={blog}
+          token={token}
+          onDelete={handleDeleteBlog}
         />
       ))}
     </div>

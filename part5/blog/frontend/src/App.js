@@ -62,12 +62,18 @@ const App = () => {
   }, []);
 
   useEffect(() => {
-    try {
-      blogService.getAll().then((b) => setBlogs(b));
-    } catch (error) {
-      console.log(error);
-    }
-  }, [token]);
+    const fetchBlogs = async () => {
+      if (isValidToken) {
+        try {
+          const newBlogList = await blogService.getAll(token);
+          setBlogs(newBlogList);
+        } catch (error) {
+          console.log(error);
+        }
+      }
+    };
+    fetchBlogs();
+  }, [isValidToken, token]);
 
   const checkIfValidToken = async (newToken) => {
     try {
@@ -83,15 +89,18 @@ const App = () => {
 
   const handleAddBlog = async () => {
     try {
+      const credentials = await loginService.getCredentials(token);
+
       const newBlog = {
         title,
         author,
         url,
+        user: credentials.user,
       };
       // blogFormRef.current.toggleVisibility();
-      await blogService.create(newBlog);
+      await blogService.create(newBlog, token);
       setBlogs([...blogs, newBlog]);
-      const message = `Successfully added "${newBlog.title}!"`;
+      const message = `Successfully added "${newBlog.title}"`;
       showNotification(message, 'success');
       setAuthor('');
       setTitle('');
@@ -108,7 +117,6 @@ const App = () => {
     try {
       const user = await loginService.login({ username, password });
       window.localStorage.setItem('blogAppUser', JSON.stringify(user));
-      blogService.setToken(user.token);
       const message = `${user.username} logged in!`;
       showNotification(message, 'success');
       setUser(user);
@@ -136,6 +144,10 @@ const App = () => {
       setNotificationMessage(null);
       setNotificationType(null);
     }, duration);
+  };
+
+  const notifyOfDeletion = (blog) => {
+    showNotification(`${blog.title} was successfully deleted.`, 'success');
   };
 
   return (
@@ -166,6 +178,7 @@ const App = () => {
               title={title}
               author={author}
               url={url}
+              token={token}
             />
           </Togglable>
           <div className='blog-list-container'>
@@ -174,6 +187,8 @@ const App = () => {
               handleLogout={handleLogout}
               handleAddBlog={handleAddBlog}
               blogs={blogs}
+              token={token}
+              postDeleteNotification={notifyOfDeletion}
             />
           </div>
         </div>
