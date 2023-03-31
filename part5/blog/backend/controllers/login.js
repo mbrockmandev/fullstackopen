@@ -27,4 +27,26 @@ loginRouter.post('/', async (req, res) => {
   res.status(200).send({ token, username: user.username, name: user.name });
 });
 
+const checkToken = (req, res, next) => {
+  const auth = req.get('authorization');
+
+  if (!auth || !auth.toLowerCase().startsWith('bearer ')) {
+    return res.status(401).json({ error: 'Invalid/Missing token.' });
+  }
+
+  const token = auth.substring(7);
+  try {
+    const decodedToken = jwt.verify(token, process.env.SECRET);
+    req.token = token;
+    req.user = decodedToken;
+    next();
+  } catch (error) {
+    return res.status(401).json({ error: 'Invalid Token.' });
+  }
+};
+
+loginRouter.get('/checkToken', checkToken, async (req, res) => {
+  res.status(200).json({ error: false });
+});
+
 module.exports = loginRouter;

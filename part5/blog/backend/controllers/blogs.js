@@ -51,7 +51,6 @@ blogsRouter.post('/multiple', async (req, res) => {
 
 blogsRouter.put('/:id', async (req, res) => {
   const newBlog = req.body;
-
   const result = await Blog.findByIdAndUpdate(req.params.id, newBlog, {
     new: true,
   });
@@ -60,9 +59,7 @@ blogsRouter.put('/:id', async (req, res) => {
 
 blogsRouter.put('/multiple', async (req, res) => {
   const { blogs } = req.body;
-
   const result = await Blog.updateMany(blogs, { new: true });
-
   res.json(result);
 });
 

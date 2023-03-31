@@ -1,6 +1,6 @@
 import Blog from './Blog';
 
-const BlogList = ({ username, handleLogout, blogs, handleLike }) => {
+const BlogList = ({ username, handleLogout, blogs }) => {
   return (
     <div>
       <h2>blogs</h2>
@@ -13,7 +13,6 @@ const BlogList = ({ username, handleLogout, blogs, handleLike }) => {
         <Blog
           key={`${blog.id}_${blog.title}`}
           blog={blog}
-          handleLike={handleLike}
         />
       ))}
     </div>

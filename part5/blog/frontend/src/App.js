@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import './App.css';
+import axios from 'axios';
 import loginService from './services/login';
 import LoginForm from './components/LoginForm';
 import BlogList from './components/BlogList';
@@ -18,6 +19,8 @@ const App = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [user, setUser] = useState(null);
+  const [isValidToken, setIsValidToken] = useState(false);
+  const [token, setToken] = useState(null);
 
   // new blog entry
   const [title, setTitle] = useState('');
@@ -29,15 +32,54 @@ const App = () => {
   const [notificationMessage, setNotificationMessage] = useState(null);
   const [notificationType, setNotificationType] = useState(null);
 
+  // on first load:
+  // get local data if it exists
+  // check the validity of the token in local data
+  // login the user automatically if valid token
+  // display blogs etc.
+
+  // if local data does not exist, display login form
+
+  // if local data exists but has invalid (likely timed out) token, show login form and set user, token to null
+
   useEffect(() => {
-    const loggedInUserJSON = window.localStorage.getItem('blogAppUser');
-    if (loggedInUserJSON) {
-      const user = JSON.parse(loggedInUserJSON);
-      setUser(user);
-      blogService.setToken(user.token);
-      blogService.getAll().then((blogs) => setBlogs(blogs));
-    }
+    const getLocalData = async () => {
+      try {
+        const localData = JSON.parse(
+          window.localStorage.getItem('blogAppUser'),
+        );
+        if (localData && checkIfValidToken(localData.token)) {
+          setUser('logged in');
+        }
+      } catch (error) {
+        setUser(null);
+        setToken(null);
+        window.localStorage.setItem('blogAppUser', '');
+        console.log(error);
+      }
+    };
+    getLocalData();
   }, []);
+
+  useEffect(() => {
+    try {
+      blogService.getAll().then((b) => setBlogs(b));
+    } catch (error) {
+      console.log(error);
+    }
+  }, [token]);
+
+  const checkIfValidToken = async (newToken) => {
+    try {
+      await axios.get('/api/login/checkToken', {
+        headers: { Authorization: `Bearer ${newToken}` },
+      });
+      setIsValidToken(true);
+      setToken(newToken);
+    } catch {
+      setIsValidToken(false);
+    }
+  };
 
   const handleAddBlog = async () => {
     try {
@@ -46,7 +88,6 @@ const App = () => {
         author,
         url,
       };
-
       // blogFormRef.current.toggleVisibility();
       await blogService.create(newBlog);
       setBlogs([...blogs, newBlog]);
@@ -71,6 +112,7 @@ const App = () => {
       const message = `${user.username} logged in!`;
       showNotification(message, 'success');
       setUser(user);
+      setToken(user.token);
       setUsername('');
       setPassword('');
     } catch (error) {
@@ -94,10 +136,6 @@ const App = () => {
       setNotificationMessage(null);
       setNotificationType(null);
     }, duration);
-  };
-
-  const handleLike = (e) => {
-    console.log('liked!');
   };
 
   return (
@@ -136,7 +174,6 @@ const App = () => {
               handleLogout={handleLogout}
               handleAddBlog={handleAddBlog}
               blogs={blogs}
-              handleLike={handleLike}
             />
           </div>
         </div>
