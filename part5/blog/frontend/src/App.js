@@ -70,6 +70,8 @@ const App = () => {
         } catch (error) {
           console.log(error);
         }
+      } else {
+        setUser(null);
       }
     };
     fetchBlogs();
@@ -97,7 +99,6 @@ const App = () => {
         url,
         user: credentials.user,
       };
-      // blogFormRef.current.toggleVisibility();
       await blogService.create(newBlog, token);
       setBlogs([...blogs, newBlog]);
       const message = `Successfully added "${newBlog.title}"`;

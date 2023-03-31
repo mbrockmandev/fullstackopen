@@ -17,8 +17,6 @@ const Blog = ({ blog, token, onDelete }) => {
   const toggleDetails = (e) => {
     e.preventDefault();
 
-    
-
     if (!!detailsVisibility) {
       e.target.innerText = 'View Details';
     } else {

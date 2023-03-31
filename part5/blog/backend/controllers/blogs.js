@@ -74,9 +74,6 @@ blogsRouter.delete('/:id', async (req, res) => {
   const blogToBeDeleted = await Blog.findById(req.params.id);
   const user = await User.findById(decodedToken.id);
 
-  console.log('blogToBeDeleted:', blogToBeDeleted);
-  console.log('user:', user);
-
   if (user._id.toString() !== blogToBeDeleted.user._id.toString()) {
     res.status(401).json({ error: 'Unauthorized access.' });
   }
