@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import './App.css';
 import Note from './components/Note';
 import Notification from './components/Notification';
@@ -6,8 +6,12 @@ import Footer from './components/Footer';
 import noteService from './services/notes';
 import loginService from './services/login';
 import LoginForm from './components/LoginForm';
+import NoteForm from './components/NoteForm';
+import Togglable from './components/Togglable';
 
 const App = () => {
+  const noteFormRef = useRef();
+
   // notes
   const [notes, setNotes] = useState([]);
   const [newNote, setNewNote] = useState('a new note...');
@@ -56,27 +60,8 @@ const App = () => {
     }
   };
 
-  const noteForm = () => {
-    return (
-      <form onSubmit={addNote}>
-        <input
-          className='input'
-          value={newNote}
-          onChange={handleNoteChange}
-        />
-        <button type='submit'>Save</button>
-      </form>
-    );
-  };
-
-  const addNote = (e) => {
-    e.preventDefault();
-    const noteObject = {
-      content: newNote,
-      important: Math.random() < 0.5,
-      id: notes.length + 1,
-    };
-
+  const addNote = (noteObject) => {
+    noteFormRef.current.toggleVisibility();
     noteService
       .create(noteObject)
       .then((returnedNote) => {
@@ -106,7 +91,7 @@ const App = () => {
       .then((returnedNote) => {
         setNotes(notes.map((note) => (note.id !== id ? note : returnedNote)));
       })
-      .catch((error) => {
+      .catch(() => {
         showNotificationMessage(
           `The note ${note.content} was already deleted from the server.`,
         );
@@ -133,26 +118,29 @@ const App = () => {
   return (
     <div className='app'>
       <div className='header'>
-        <h1>Notes</h1>
+        <h1>Notes App</h1>
         <Notification
           message={notificationMessage}
           type={notificationType}
         />
 
         {!user && (
-          <LoginForm
-            handleLogin={handleLogin}
-            username={username}
-            setUsername={setUsername}
-            password={password}
-            setPassword={setPassword}
-          />
+          <Togglable buttonLabel='Login'>
+            <LoginForm
+              username={username}
+              setUsername={setUsername}
+              password={password}
+              setPassword={setPassword}
+              handleLogin={handleLogin}
+            />
+          </Togglable>
         )}
-
         {user && (
-          <div className='user'>
-            <p>{user.username} logged in</p>
-            {noteForm()}
+          <div>
+            <p>{user.name} logged in</p>
+            <Togglable buttonLabel='New Note'>
+              <NoteForm createNote={addNote} />
+            </Togglable>
           </div>
         )}
 
