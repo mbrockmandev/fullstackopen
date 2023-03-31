@@ -32,38 +32,29 @@ const App = () => {
   const [notificationMessage, setNotificationMessage] = useState(null);
   const [notificationType, setNotificationType] = useState(null);
 
-  // on first load:
-  // get local data if it exists
-  // check the validity of the token in local data
-  // login the user automatically if valid token
-  // display blogs etc.
-
-  // if local data does not exist, display login form
-
-  // if local data exists but has invalid (likely timed out) token, show login form and set user, token to null
-
   useEffect(() => {
     const getLocalData = async () => {
       try {
         const localData = JSON.parse(
           window.localStorage.getItem('blogAppUser'),
         );
-        if (localData && checkIfValidToken(localData.token)) {
-          setUser('logged in');
+        await checkIfValidToken(localData.token);
+        if (localData && isValidToken) {
+          setUser(localData);
         }
       } catch (error) {
         setUser(null);
         setToken(null);
-        window.localStorage.setItem('blogAppUser', '');
+        window.localStorage.setItem('blogAppUser', JSON.stringify(user));
         console.log(error);
       }
     };
     getLocalData();
-  }, []);
+  }, [isValidToken]);
 
   useEffect(() => {
     const fetchBlogs = async () => {
-      if (isValidToken) {
+      if (user && isValidToken) {
         try {
           const newBlogList = await blogService.getAll(token);
           setBlogs(newBlogList);
@@ -75,7 +66,7 @@ const App = () => {
       }
     };
     fetchBlogs();
-  }, [isValidToken, token]);
+  }, [isValidToken, token, user]);
 
   const checkIfValidToken = async (newToken) => {
     try {
