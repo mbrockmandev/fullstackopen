@@ -1,18 +1,22 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import './App.css';
-import BlogList from './components/BlogList';
-import LoginForm from './components/LoginForm';
-import blogService from './services/blogs';
 import loginService from './services/login';
+import LoginForm from './components/LoginForm';
+import BlogList from './components/BlogList';
+import BlogForm from './components/BlogForm';
+import blogService from './services/blogs';
 import Notification from './components/Notification';
+import Togglable from './components/Togglable';
 
 const App = () => {
+  const blogFormRef = useRef();
+
   // list of blogs
   const [blogs, setBlogs] = useState([]);
 
   // user login
-  const [username, setUsername] = useState('mike');
-  const [password, setPassword] = useState('12345');
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
   const [user, setUser] = useState(null);
 
   // new blog entry
@@ -43,6 +47,8 @@ const App = () => {
         url,
       };
       console.log('newBlog:', newBlog);
+
+      blogFormRef.current.toggleVisibility();
       await blogService.create(newBlog);
       setBlogs([...blogs, newBlog]);
       const message = `Successfully added "${newBlog.title}!"`;
@@ -92,36 +98,37 @@ const App = () => {
   };
 
   return (
-    <div>
+    <div className='app-container'>
       <Notification
         message={notificationMessage}
         type={notificationType}
       />
-      {user === null ? (
-        <>
-          <LoginForm
-            username={username}
-            setUsername={setUsername}
-            password={password}
-            setPassword={setPassword}
-            handleLogin={handleLogin}
-          />
-        </>
-      ) : (
-        <>
-          <BlogList
-            handleLogout={handleLogout}
-            user={user}
-            title={title}
-            setTitle={setTitle}
-            author={author}
-            setAuthor={setAuthor}
-            url={url}
-            setUrl={setUrl}
-            handleAddBlog={handleAddBlog}
-            blogs={blogs}
-          />
-        </>
+      {!user && (
+        <div className='login-form-container'>
+          <Togglable buttonLabel='Login'>
+            <LoginForm
+              username={username}
+              setUsername={setUsername}
+              password={password}
+              setPassword={setPassword}
+              handleLogin={handleLogin}
+            />
+          </Togglable>
+        </div>
+      )}
+      {user && (
+        <div>
+          {
+            <div className='blog-list-container'>
+              <BlogList
+                username={username}
+                handleLogout={handleLogout}
+                handleAddBlog={handleAddBlog}
+                blogs={blogs}
+              />
+            </div>
+          }
+        </div>
       )}
     </div>
   );

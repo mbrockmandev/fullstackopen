@@ -24,6 +24,10 @@ const errorHandler = (err, req, res, next) => {
 };
 
 const tokenExtractor = (req, res, next) => {
+  if (req.path === '/api/blogs' && req.method === 'GET') {
+    return next();
+  }
+
   const authorization = req.get('authorization');
 
   if (authorization && authorization.toLowerCase().startsWith('bearer ')) {
@@ -33,6 +37,9 @@ const tokenExtractor = (req, res, next) => {
 };
 
 const tokenValidator = (req, res, next) => {
+  if (req.path === '/api/blogs' && req.method === 'GET') {
+    return next();
+  }
   const token = req.token;
   if (!token) {
     return res.status(401).json({ error: 'Missing Token' });
