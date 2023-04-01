@@ -1,3 +1,5 @@
+import PropTypes from 'prop-types';
+
 const BlogForm = ({
   onAddBlog,
   setTitle,
@@ -50,6 +52,16 @@ const BlogForm = ({
       </div>
     </form>
   );
+};
+
+BlogForm.propTypes = {
+  onAddBlog: PropTypes.func.isRequired,
+  setTitle: PropTypes.func.isRequired,
+  setAuthor: PropTypes.func.isRequired,
+  setUrl: PropTypes.func.isRequired,
+  title: PropTypes.string.isRequired,
+  author: PropTypes.string.isRequired,
+  url: PropTypes.string.isRequired,
 };
 
 export default BlogForm;

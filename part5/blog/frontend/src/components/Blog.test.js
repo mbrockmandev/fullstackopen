@@ -47,4 +47,29 @@ describe('Blog component tests', () => {
 
     expect(component.container).toHaveTextContent('7');
   });
+
+  test('clicking the view details button twice shows then hides url and number of likes', () => {
+    const component = render(
+      <Blog
+        blog={blog}
+        onLike={mockOnLike}
+        onDelete={mockOnDelete}
+      />,
+    );
+
+    const button = component.getByText('View Details');
+    fireEvent.click(button);
+
+    expect(component.container).toHaveTextContent('https://reactpatterns.com/');
+
+    expect(component.container).toHaveTextContent('7');
+
+    fireEvent.click(button);
+
+    expect(component.container).not.toHaveTextContent(
+      'https://reactpatterns.com/',
+    );
+
+    expect(component.container).not.toHaveTextContent('7');
+  });
 });
