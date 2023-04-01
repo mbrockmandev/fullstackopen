@@ -1,5 +1,5 @@
 const BlogForm = ({
-  handleAddBlog,
+  onAddBlog,
   setTitle,
   setAuthor,
   setUrl,
@@ -10,7 +10,7 @@ const BlogForm = ({
   const addBlog = async (e) => {
     e.preventDefault();
 
-    handleAddBlog({
+    onAddBlog({
       title: title,
       author: author,
       url: url,

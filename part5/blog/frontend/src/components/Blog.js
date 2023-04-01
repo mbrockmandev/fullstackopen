@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
-import blogService from '../services/blogs';
 import PropTypes from 'prop-types';
 
-const Blog = ({ blog, token, onDelete }) => {
+const Blog = ({ blog, onLike, onDelete }) => {
   const [detailsVisibility, setDetailsVisibility] = useState(false);
   const [likes, setLikes] = useState(blog.likes);
 
@@ -27,29 +26,14 @@ const Blog = ({ blog, token, onDelete }) => {
     setDetailsVisibility(!detailsVisibility);
   };
 
-  const handleLike = async () => {
-    try {
-      const incrementedLikes = likes + 1;
-      const data = {
-        likes: incrementedLikes,
-      };
-      const res = await blogService.update(`${blog.id}`, data, token);
-      setLikes(res.likes);
-    } catch (error) {
-      console.log(error);
-    }
+  const handleLike = () => {
+    onLike(blog);
+    const newLikes = likes + 1;
+    setLikes(newLikes);
   };
 
-  const handleDelete = async () => {
-    try {
-      const blogToBeDeleted = blog;
-      if (window.confirm(`Delete ${blog.title} by ${blog.author}?`)) {
-        await blogService.removeBlog(`${blog.id}`, token);
-        onDelete(blog.id, blogToBeDeleted);
-      }
-    } catch (error) {
-      console.log(error);
-    }
+  const handleDelete = () => {
+    onDelete(blog);
   };
 
   return (
@@ -79,8 +63,8 @@ const Blog = ({ blog, token, onDelete }) => {
 
 Blog.propTypes = {
   blog: PropTypes.object.isRequired,
-  token: PropTypes.string.isRequired,
-  deleteBlog: PropTypes.func.isRequired,
+  onLike: PropTypes.func.isRequired,
+  onDelete: PropTypes.func.isRequired,
 };
 
 export default Blog;

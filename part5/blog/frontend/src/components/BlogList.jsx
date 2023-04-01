@@ -1,13 +1,7 @@
 import { useState, useEffect } from 'react';
 import Blog from './Blog';
 
-const BlogList = ({
-  username,
-  handleLogout,
-  blogs,
-  token,
-  postDeleteNotification,
-}) => {
+const BlogList = ({ username, handleLogout, blogs, onLike, onDelete }) => {
   const [blogList, setBlogList] = useState(blogs);
   const [sortMethod, setSortMethod] = useState('title');
 
@@ -15,10 +9,10 @@ const BlogList = ({
     setBlogList(blogs);
   }, [blogs]);
 
-  const handleDeleteBlog = (id, blogToBeDeleted) => {
-    setBlogList(blogList.filter((blog) => blog.id !== id));
-    postDeleteNotification(blogToBeDeleted);
-  };
+  // const onDelete = (id, blogToBeDeleted) => {
+  //   setBlogList(blogList.filter((blog) => blog.id !== id));
+  //   postDeleteNotification(blogToBeDeleted);
+  // };
 
   const toggleSortMethod = () => {
     if (sortMethod === 'title') {
@@ -28,9 +22,6 @@ const BlogList = ({
     } else {
       setSortMethod('title');
     }
-    console.log('sorting by: ', sortMethod);
-    // check against sort method and cycle through?
-    // will just re-map for each sort method and setBlogList accordingly to new blogList map.
   };
 
   useEffect(() => {
@@ -63,16 +54,16 @@ const BlogList = ({
         <button onClick={handleLogout}>Logout</button>
       </p>
       <p>Sorting by: {sortMethod}</p>
+      <button onClick={toggleSortMethod}>Change Sort</button>
 
       {blogList.map((blog) => (
         <Blog
           key={`${blog.id}_${blog.title}`}
           blog={blog}
-          token={token}
-          onDelete={handleDeleteBlog}
+          onLike={onLike}
+          onDelete={onDelete}
         />
       ))}
-      <button onClick={toggleSortMethod}>Change Sort</button>
     </div>
   );
 };
