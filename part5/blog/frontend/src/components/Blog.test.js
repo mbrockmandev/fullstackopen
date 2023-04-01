@@ -9,36 +9,38 @@ describe('Blog component tests', () => {
     author: 'Michael Chan',
     url: 'https://reactpatterns.com/',
     likes: 7,
+    user: {
+      username: 'mike',
+    },
   };
 
-  let mockToken = '1230498172349781uifdhiwfh';
-
-  let mockUpdateBlog = jest.fn();
-  let mockDeleteBlog = jest.fn();
+  let mockOnLike = jest.fn();
+  let mockOnDelete = jest.fn();
 
   test('renders title and author', () => {
     const component = render(
       <Blog
         blog={blog}
-        updateBlog={mockUpdateBlog}
-        deleteBlog={mockDeleteBlog}
+        onLike={mockOnLike}
+        onDelete={mockOnDelete}
       />,
     );
-    expect(component.container).toHaveTextContent(
-      'React patterns - Michael Chan',
-    );
+
+    const divContainer = component.container.querySelector('.title-author');
+
+    expect(divContainer).toHaveTextContent('React patterns -- Michael Chan');
   });
 
   test('clicking the view button displays url and number of likes', () => {
     const component = render(
       <Blog
         blog={blog}
-        token={mockToken}
-        deleteBlog={mockDeleteBlog}
+        onLike={mockOnLike}
+        onDelete={mockOnDelete}
       />,
     );
 
-    const button = component.getByText('view');
+    const button = component.getByText('View Details');
     fireEvent.click(button);
 
     expect(component.container).toHaveTextContent('https://reactpatterns.com/');

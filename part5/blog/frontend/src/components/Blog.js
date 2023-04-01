@@ -39,7 +39,9 @@ const Blog = ({ blog, onLike, onDelete }) => {
   return (
     <div style={blogStyle}>
       <div className='title-author-container'>
-        {blog.title} -- {blog.author}
+        <div className='title-author'>
+          {blog.title} -- {blog.author}
+        </div>
         <button
           id='details-btn'
           onClick={toggleDetails}>
