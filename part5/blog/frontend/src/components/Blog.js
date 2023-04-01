@@ -54,7 +54,7 @@ const Blog = ({ blog, token, onDelete }) => {
   return (
     <div style={blogStyle}>
       <div className='title-author-container'>
-        {blog.title} -- {blog.author} --{' '}
+        {blog.title} -- {blog.author}
         <button
           id='details-btn'
           onClick={toggleDetails}>

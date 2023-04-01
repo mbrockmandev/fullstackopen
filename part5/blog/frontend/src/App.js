@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import './App.css';
 import axios from 'axios';
 import loginService from './services/login';
@@ -10,7 +10,7 @@ import Notification from './components/Notification';
 import Togglable from './components/Togglable';
 
 const App = () => {
-  const blogFormRef = useRef();
+  // const blogFormRef = useRef();
 
   // list of blogs
   const [blogs, setBlogs] = useState([]);
@@ -26,7 +26,7 @@ const App = () => {
   const [title, setTitle] = useState('');
   const [author, setAuthor] = useState('');
   const [url, setUrl] = useState('');
-  const [likes, setLikes] = useState(0);
+  // const [likes, setLikes] = useState(0);
 
   // notifications
   const [notificationMessage, setNotificationMessage] = useState(null);
