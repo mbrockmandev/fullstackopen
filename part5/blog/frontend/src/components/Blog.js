@@ -17,7 +17,8 @@ const Blog = ({ blog, token, onDelete }) => {
   const toggleDetails = (e) => {
     e.preventDefault();
 
-    if (!!detailsVisibility) {
+    // previously !!detailsVisibility
+    if (detailsVisibility) {
       e.target.innerText = 'View Details';
     } else {
       e.target.innerText = 'Hide Details';
@@ -52,7 +53,7 @@ const Blog = ({ blog, token, onDelete }) => {
 
   return (
     <div style={blogStyle}>
-      <div>
+      <div className='title-author-container'>
         {blog.title} -- {blog.author} --{' '}
         <button
           id='details-btn'
@@ -60,9 +61,9 @@ const Blog = ({ blog, token, onDelete }) => {
           View Details
         </button>
         {detailsVisibility && (
-          <div>
-            <p>URL: {blog.url}</p>
-            <p>
+          <div className='url-likes-container'>
+            <p className='url-text'>URL: {blog.url}</p>
+            <p className='likes-text'>
               Likes: {likes} <button onClick={handleLike}>Like?</button>
             </p>
             {blog.user.username && <p>User: {blog.user.username}</p>}

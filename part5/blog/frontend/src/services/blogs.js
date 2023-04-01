@@ -41,5 +41,4 @@ const removeBlog = async (id, token) => {
   return res.data;
 };
 
-// eslint-disable-next-line import/no-anonymous-default-export
 export default { getAll, getBlogById, create, update, removeBlog };
