@@ -29,18 +29,21 @@ const BlogForm = ({
         <input
           type='text'
           onChange={(e) => setTitle(e.target.value)}
+          value={title}
           name='title'
         />
         <p>Author:</p>
         <input
           type='text'
           onChange={(e) => setAuthor(e.target.value)}
+          value={author}
           name='author'
         />
         <p>URL:</p>
         <input
           type='text'
           onChange={(e) => setUrl(e.target.value)}
+          value={url}
           name='url'
         />
         <button type='submit'>Save New</button>

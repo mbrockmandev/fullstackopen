@@ -119,8 +119,9 @@ const App = () => {
   const handleDelete = async (blog) => {
     try {
       if (window.confirm(`Delete ${blog.title} by ${blog.author}?`)) {
-        console.log('blog', blog);
+        const blogId = blog.id;
         await blogService.removeBlog(`${blog.id}`, token);
+        setBlogs(blogs.filter((b) => b.id !== blogId));
         showNotification(`${blog.title} was successfully deleted.`, 'success');
       }
     } catch (error) {
