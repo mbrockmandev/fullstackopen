@@ -14,7 +14,6 @@ const App = () => {
 
   // notes
   const [notes, setNotes] = useState([]);
-  const [newNote, setNewNote] = useState('a new note...');
   const [showAll, setShowAll] = useState(true);
   // notifications
   const [notificationMessage, setNotificationMessage] = useState(null);
@@ -60,26 +59,24 @@ const App = () => {
     }
   };
 
-  const addNote = (noteObject) => {
-    noteFormRef.current.toggleVisibility();
-    noteService
-      .create(noteObject)
-      .then((returnedNote) => {
-        setNotes(notes.concat(returnedNote));
-        showNotificationMessage(`Added ${returnedNote.content}`);
-        setNotificationType('success');
-      })
-      .catch((error) => {
-        // handle validation errors!
-        const input = error.request.response;
-        const startIndex = input.indexOf('ValidationError');
-        const endIndex = input.indexOf('<br>', startIndex);
-        const errorMessage = input.slice(startIndex, endIndex);
+  const addNote = async (noteObject) => {
+    try {
+      const res = await noteService.create(noteObject);
+      console.log('res:', res);
+      setNotes([...notes, res]);
+      showNotificationMessage(`Added ${res.content}`);
+      setNotificationType('success');
+      noteFormRef.current.toggleVisibility();
+    } catch (error) {
+      console.log(error);
+      const input = error.request;
+      const startIndex = input.indexOf('ValidationError');
+      const endIndex = input.indexOf('<br>', startIndex);
+      const errorMessage = input.slice(startIndex, endIndex);
 
-        showNotificationMessage(`${errorMessage}`);
-        setNotificationType('error');
-      });
-    setNewNote('');
+      showNotificationMessage(`${errorMessage}`);
+      setNotificationType('error');
+    }
   };
 
   const toggleImportanceOf = (id) => {
@@ -105,10 +102,6 @@ const App = () => {
     setTimeout(() => {
       setNotificationMessage(null);
     }, duration);
-  };
-
-  const handleNoteChange = (e) => {
-    setNewNote(e.target.value);
   };
 
   const notesToShow = showAll
@@ -137,7 +130,7 @@ const App = () => {
         )}
         {user && (
           <div>
-            <p>{user.name} logged in</p>
+            <p>{user.username} logged in</p>
             <Togglable buttonLabel='New Note'>
               <NoteForm createNote={addNote} />
             </Togglable>
@@ -146,7 +139,7 @@ const App = () => {
 
         <div>
           <button onClick={() => setShowAll(!showAll)}>
-            show {showAll ? 'important' : 'all'}
+            Show {showAll ? 'important' : 'all'}
           </button>
         </div>
         <ul className='note-container'>
@@ -159,13 +152,6 @@ const App = () => {
             />
           ))}
         </ul>
-        <form onSubmit={addNote}>
-          <input
-            value={newNote}
-            onChange={handleNoteChange}
-          />
-          <button type='submit'>save</button>
-        </form>
         <Footer />
       </div>
     </div>
