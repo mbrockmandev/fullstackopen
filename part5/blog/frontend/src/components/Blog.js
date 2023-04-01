@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import blogService from '../services/blogs';
+import PropTypes from 'prop-types';
 
 const Blog = ({ blog, token, onDelete }) => {
   const [detailsVisibility, setDetailsVisibility] = useState(false);
@@ -74,6 +75,12 @@ const Blog = ({ blog, token, onDelete }) => {
       </div>
     </div>
   );
+};
+
+Blog.propTypes = {
+  blog: PropTypes.object.isRequired,
+  token: PropTypes.string.isRequired,
+  deleteBlog: PropTypes.func.isRequired,
 };
 
 export default Blog;
