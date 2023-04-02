@@ -34,10 +34,11 @@ const App = () => {
 
   useEffect(() => {
     const getLocalData = async () => {
+      const localData = JSON.parse(window.localStorage.getItem('blogAppUser'));
+      if (localData === null) {
+        return;
+      }
       try {
-        const localData = JSON.parse(
-          window.localStorage.getItem('blogAppUser'),
-        );
         await checkIfValidToken(localData.token);
         if (localData && isValidToken) {
           setUser(localData);
@@ -45,8 +46,8 @@ const App = () => {
       } catch (error) {
         setUser(null);
         setToken(null);
-        window.localStorage.setItem('blogAppUser', JSON.stringify(user));
-        console.log(error);
+        window.localStorage.clear();
+        console.log(error.message);
       }
     };
     getLocalData();
@@ -143,7 +144,7 @@ const App = () => {
     } catch (error) {
       const message = 'Incorrect username/password.';
       showNotification(message, 'error');
-      console.log(error);
+      console.log(error.message);
     }
   };
 

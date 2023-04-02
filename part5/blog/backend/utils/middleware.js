@@ -45,10 +45,22 @@ const tokenValidator = (req, res, next) => {
     return res.status(401).json({ error: 'Missing Token' });
   }
 
-  const decodedToken = jwt.verify(token, process.env.SECRET);
-  if (!decodedToken.id) {
+  const decoded = jwt.verify(token, process.env.SECRET);
+  if (!decoded.id) {
     return res.status(401).json({ error: 'Invalid Token' });
   }
+
+  const { exp } = decoded;
+
+  if (Date.now() >= exp * 1000) {
+    const newToken = jwt.sign({ user: decoded.user }, process.env.SECRET, {
+      expiresIn: '1h',
+    });
+    res.set('Authorization', newToken);
+  }
+
+  req.user = decoded.user;
+
   next();
 };
 

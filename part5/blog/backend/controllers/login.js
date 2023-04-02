@@ -54,6 +54,7 @@ loginRouter.get('/getCredentials', async (req, res) => {
   }
   const token = auth.substring(7);
   const decodedToken = jwt.verify(token, process.env.SECRET);
+
   req.token = token;
   req.user = decodedToken;
   res.status(200).json({ user: req.user, token: req.token });

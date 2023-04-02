@@ -30,10 +30,12 @@ const Blog = ({ blog, onLike, onDelete }) => {
     onLike(blog);
     const newLikes = likes + 1;
     setLikes(newLikes);
+    return blog;
   };
 
   const handleDelete = () => {
     onDelete(blog);
+    return blog;
   };
 
   return (
@@ -43,7 +45,7 @@ const Blog = ({ blog, onLike, onDelete }) => {
           {blog.title} -- {blog.author}
         </div>
         <button
-          id='details-btn'
+          id='btn-details'
           onClick={toggleDetails}>
           View Details
         </button>
@@ -51,11 +53,20 @@ const Blog = ({ blog, onLike, onDelete }) => {
           <div className='url-likes-container'>
             <p className='url-text'>URL: {blog.url}</p>
             <p className='likes-text'>
-              Likes: {likes} <button onClick={handleLike}>Like?</button>
+              Likes: {likes}{' '}
+              <button
+                id='btn-like'
+                onClick={handleLike}>
+                Like?
+              </button>
             </p>
             {blog.user.username && <p>User: {blog.user.username}</p>}
 
-            <button onClick={handleDelete}>Delete</button>
+            <button
+              id='btn-delete'
+              onClick={handleDelete}>
+              Delete
+            </button>
           </div>
         )}
       </div>
