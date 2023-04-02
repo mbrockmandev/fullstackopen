@@ -13,7 +13,7 @@ const LoginForm = ({
       <div>
         Username:{' '}
         <input
-          className='username'
+          id='username'
           type='text'
           value={username}
           name='username'
@@ -23,15 +23,15 @@ const LoginForm = ({
       <div>
         Password:{' '}
         <input
-          className='password'
-          type='text'
+          id='password'
+          type='password'
           value={password}
           name='password'
           onChange={({ target }) => setPassword(target.value)}
         />
       </div>
       <button
-        id='login-button'
+        id='btn-login'
         type='submit'>
         Login
       </button>

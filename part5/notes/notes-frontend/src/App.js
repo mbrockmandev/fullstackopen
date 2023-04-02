@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import './App.css';
 import Note from './components/Note';
 import Notification from './components/Notification';
@@ -10,7 +10,7 @@ import NoteForm from './components/NoteForm';
 import Togglable from './components/Togglable';
 
 const App = () => {
-  const noteFormRef = useRef();
+  // const noteFormRef = useRef();
 
   // notes
   const [notes, setNotes] = useState([]);
@@ -66,7 +66,7 @@ const App = () => {
       setNotes([...notes, res]);
       showNotificationMessage(`Added ${res.content}`);
       setNotificationType('success');
-      noteFormRef.current.toggleVisibility();
+      // noteFormRef.current.toggleVisibility();
     } catch (error) {
       console.log(error);
       const input = error.request;
