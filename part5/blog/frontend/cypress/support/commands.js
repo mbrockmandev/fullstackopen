@@ -24,6 +24,14 @@
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
 
+Cypress.Commands.add('makeUser', ({ name, username, password }) => {
+  cy.request('POST', `${Cypress.env('BACKEND')}/users`, {
+    name,
+    username,
+    password,
+  });
+});
+
 Cypress.Commands.add('login', ({ name, username, password }) => {
   cy.request('POST', `${Cypress.env('BACKEND')}/login`, {
     name,

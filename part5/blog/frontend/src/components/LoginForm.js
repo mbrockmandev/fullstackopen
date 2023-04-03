@@ -7,7 +7,10 @@ const LoginForm = ({
   password,
   setPassword,
   handleLogin,
+  loggedIn,
 }) => {
+  if (loggedIn) return null;
+
   return (
     <form onSubmit={handleLogin}>
       <div>

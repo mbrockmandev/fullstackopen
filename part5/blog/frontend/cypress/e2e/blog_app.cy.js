@@ -6,7 +6,7 @@ describe('Blog App', function () {
       username: 'mike',
       password: '12345',
     };
-    cy.request('POST', `${Cypress.env('BACKEND')}/users`, user);
+    cy.makeUser(user);
     cy.visit('');
   });
 
@@ -76,36 +76,62 @@ describe('Blog App', function () {
         author: 'ME!',
         url: 'https://localhost.google.com/',
       });
-      cy.contains('a new title -- ME!');
+      cy.contains('a new title -- ME!').as('blogToBeDeleted');
       // like blog
       cy.get('#btn-details').click();
       cy.contains('User: mike');
       cy.get('#btn-delete').click();
-      cy.contains('');
-
-
-
-      // it('Handling JS Confirm - Validate Confirm Text and Click OK', () => {
-      //   cy.contains('Click for JS Confirm').click()
-      //   cy.on('window:confirm', (str) => {
-      //     expect(str).to.equal(`I am a JS Confirm`)
-      //   })
-      //   cy.on('window:confirm', () => true)
-      //   cy.get('#result').should('have.text', 'You clicked: Ok')
-      // })
-
+      cy.on('window:confirm', () => true);
+      cy.get('@blogToBeDeleted').should('not.exist');
     });
 
     it('blog does not show delete button for non-owners', function () {
       // create new user
       // login with new user
-      // then post a blog
-      // then logout
+      const user = {
+        name: 'mike',
+        username: 'mike',
+        password: '12345',
+      };
+      cy.login(user);
+      // post a blog
+      const newBlog = {
+        title: 'A New Hope (title)',
+        author: 'George Lucas',
+        url: 'https://starwars.com/',
+      };
+      cy.createBlog(newBlog);
+      cy.get('#btn-details').click();
+      cy.get('#btn-delete').as('deleteButton');
+      // logout
+      cy.get('#btn-logout').click();
+
+      // check that I am logged out
+      cy.contains('Username: ');
+      cy.contains('Password: ');
+      cy.contains('Login');
+
+      cy.intercept('POST', '/api/logout', (req) => {
+        expect(req.headers.authorization).to.equal(null);
+        req.reply(200);
+      });
+
+      // make new user
+      const newUser = {
+        name: 'rachel',
+        username: 'rachel',
+        password: 'whatsup',
+      };
+      cy.makeUser(newUser);
       // log back in as another user
-      // look for delete button on page
+      cy.login(newUser);
+      // cy.visit('');
+      // look for delete button on page which should be absent
+      cy.get('#btn-details').click();
+      cy.get('@deleteButton').should('not.exist');
     });
 
-    it('clicking on the blog sort button changes sorting methods', function () {
+    it.only('clicking on the blog sort button changes sorting methods', function () {
       // lots of steps here...?
     });
   });

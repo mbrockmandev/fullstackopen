@@ -178,6 +178,7 @@ const App = () => {
             password={password}
             setPassword={setPassword}
             handleLogin={handleLogin}
+            loggedIn={user}
           />
         </div>
       )}
@@ -197,7 +198,7 @@ const App = () => {
           </Togglable>
           <div className='blog-list-container'>
             <BlogList
-              username={username}
+              username={user.username}
               handleLogout={handleLogout}
               blogs={blogs}
               onLike={handleLike}

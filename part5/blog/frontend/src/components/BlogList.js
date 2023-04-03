@@ -51,10 +51,18 @@ const BlogList = ({ username, handleLogout, blogs, onLike, onDelete }) => {
       <h2>blogs</h2>
       <p>
         {username} Logged In.
-        <button onClick={handleLogout}>Logout</button>
+        <button
+          id='btn-logout'
+          onClick={handleLogout}>
+          Logout
+        </button>
       </p>
       <p>Sorting by: {sortMethod}</p>
-      <button onClick={toggleSortMethod}>Change Sort</button>
+      <button
+        id='btn-sort'
+        onClick={toggleSortMethod}>
+        Change Sort
+      </button>
 
       {blogList.map((blog) => (
         <Blog
@@ -62,6 +70,7 @@ const BlogList = ({ username, handleLogout, blogs, onLike, onDelete }) => {
           blog={blog}
           onLike={onLike}
           onDelete={onDelete}
+          username={username}
         />
       ))}
     </div>
