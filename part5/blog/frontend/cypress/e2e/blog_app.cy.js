@@ -133,6 +133,95 @@ describe('Blog App', function () {
 
     it.only('clicking on the blog sort button changes sorting methods', function () {
       // lots of steps here...?
+      cy.login({ name: 'mike', username: 'mike', password: '12345' });
+      // add multiple blog posts
+
+      const blogs = [
+        {
+          title: 'A Beginners Guide to JavaScript',
+          author: 'John Smith',
+          url: 'https://www.example.com/beginners-guide-to-javascript',
+          likes: 12,
+          user: '6424d92f387e05e6c8d3342e',
+        },
+        {
+          title: '10 Tips for Writing Better Code',
+          author: 'Jane Doe',
+          url: 'https://www.example.com/10-tips-for-writing-better-code',
+          likes: 25,
+          user: '6424d92f387e05e6c8d3342e',
+        },
+        {
+          title: 'The Future of Web Development',
+          author: 'Alex Johnson',
+          url: 'https://www.example.com/future-of-web-development',
+          likes: 18,
+          user: '6424d92f387e05e6c8d3342e',
+        },
+        {
+          title: 'How to Build a RESTful API',
+          author: 'Sarah Lee',
+          url: 'https://www.example.com/building-a-restful-api',
+          likes: 8,
+          user: '6424d92f387e05e6c8d3342e',
+        },
+        {
+          title: 'Introduction to React.js',
+          author: 'Mike Brown',
+          url: 'https://www.example.com/introduction-to-react-js',
+          likes: 35,
+          user: '6424d92f387e05e6c8d3342e',
+        },
+        {
+          title: '10 Ways to Speed Up Your Website',
+          author: 'Lisa Kim',
+          url: 'https://www.example.com/10-ways-to-speed-up-your-website',
+          likes: 17,
+          user: '6424d92f387e05e6c8d3342e',
+        },
+        {
+          title: 'Best Practices for Node.js Development',
+          author: 'David Jones',
+          url: 'https://www.example.com/best-practices-for-node-js-development',
+          likes: 22,
+          user: '6424d92f387e05e6c8d3342e',
+        },
+        {
+          title: 'Creating Custom WordPress Themes',
+          author: 'Emily Davis',
+          url: 'https://www.example.com/creating-custom-wordpress-themes',
+          likes: 11,
+          user: '6424d92f387e05e6c8d3342e',
+        },
+        {
+          title: 'Introduction to Machine Learning',
+          author: 'Chris Lee',
+          url: 'https://www.example.com/introduction-to-machine-learning',
+          likes: 29,
+          user: '6424d92f387e05e6c8d3342e',
+        },
+        {
+          title: 'How to Secure Your Web Application',
+          author: 'Brian Johnson',
+          url: 'https://www.example.com/how-to-secure-your-web-application',
+          likes: 14,
+          user: '6424d92f387e05e6c8d3342e',
+        },
+      ];
+      cy.createMultipleBlogs(blogs);
+
+      cy.get('#btn-sort').as('sortButton').click().click();
+
+      // select all the title author pairs
+      cy.get('div.title-author').then(($elements) => {
+        const strings = [...$elements].map((element) => element.innerText);
+        expect(strings[0]).to.deep.equal(
+          'Introduction to React.js -- Mike Brown',
+        );
+        expect(strings[9]).to.deep.equal(
+          'How to Build a RESTful API -- Sarah Lee',
+        );
+      });
     });
   });
 });
