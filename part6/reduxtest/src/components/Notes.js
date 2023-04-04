@@ -16,31 +16,43 @@ const Notes = () => {
   const dispatch = useDispatch();
   const notes = useSelector((state) => state);
 
+  const filterSelected = (value) => {
+    console.log(value);
+  };
+
   const importantNotes = useSelector((state) =>
     state.filter((n) => n.important),
+  );
+
+  const unimportantNotes = useSelector((state) =>
+    state.filter((n) => !n.important),
   );
 
   const toggleImportance = (id) => {
     dispatch(toggleImportanceOf(id));
   };
 
-  const toggleShowImportant = (e) => {
-    e.preventDefault();
-    const label = document.querySelector('#label-important');
-    if (e.target.innerText === 'Show Important') {
-      label.innerText = 'Show All';
-      e.target.innerText = 'Show All';
-    } else {
-      label.innerText = 'Show Important';
-      e.target.innerText = 'Show Important';
-    }
-  };
-
   return (
     <>
       <div className='container-important'>
-        <p id='label-important'>Show Important</p>
-        <button onClick={toggleShowImportant}>Show Important</button>
+        all
+        <input
+          type='radio'
+          name='filter'
+          onChange={() => filterSelected('ALL')}
+        />
+        important
+        <input
+          type='radio'
+          name='filter'
+          onChange={() => filterSelected('IMPORTANT')}
+        />
+        unimportant
+        <input
+          type='radio'
+          name='filter'
+          onChange={() => filterSelected('UNIMPORTANT')}
+        />
       </div>
       <ul>
         {notes.map((note) => (
