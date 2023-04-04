@@ -38,7 +38,9 @@ const anecdoteSlice = createSlice({
       const anecdoteToUpdate = state.find((a) => a.id === id);
       if (anecdoteToUpdate) {
         anecdoteToUpdate.votes++;
+        state.notification = `You voted for ${anecdoteToUpdate.content}`;
       }
+      console.log(JSON.parse(JSON.stringify(state)));
     },
   },
 });
