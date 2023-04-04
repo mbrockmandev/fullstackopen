@@ -14,8 +14,9 @@ const AnecdoteList = () => {
   const sortedAnecdotes = anecdotes.sort((a, b) => b.votes - a.votes);
 
   const handleVote = (anecdote) => {
+    console.log(anecdote);
     dispatch(vote(anecdote.id));
-    dispatch(setNotification(anecdote.content)); // need to troubleshoot this...
+    dispatch(setNotification(anecdote.content));
   };
   return (
     <>
@@ -24,7 +25,7 @@ const AnecdoteList = () => {
           <div>{anecdote.content}</div>
           <div>
             has {anecdote.votes}
-            <button onClick={handleVote}>vote</button>
+            <button onClick={() => handleVote(anecdote)}>vote</button>
           </div>
         </div>
       ))}
