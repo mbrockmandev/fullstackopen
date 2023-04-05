@@ -5,7 +5,6 @@ const AnecdoteFilter = () => {
   const dispatch = useDispatch();
 
   const handleInput = (e) => {
-    console.log('FILTER: ', e.target.value);
     dispatch(setFilter(e.target.value));
   };
 

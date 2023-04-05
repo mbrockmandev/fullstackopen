@@ -1,4 +1,3 @@
-import noteService from '../services/anecdotes';
 import { createSlice } from '@reduxjs/toolkit';
 
 const anecdoteSlice = createSlice({
@@ -6,6 +5,7 @@ const anecdoteSlice = createSlice({
   initialState: [],
   reducers: {
     createAnecdote(state, action) {
+      console.log(action);
       state.push(action.payload);
     },
     vote(state, action) {

@@ -18,11 +18,7 @@ const Notification = () => {
   }, [notification, dispatch]);
 
   if (notification !== '') {
-    return (
-      <div style={style}>
-        You voted for: <i>{notification}</i>
-      </div>
-    );
+    return <div style={style}>{notification}</div>;
   } else {
     return null;
   }
