@@ -1,6 +1,6 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { vote } from '../reducers/anecdoteReducer';
-import { showVoteNotification } from '../reducers/notificationReducer';
+import { showNotification } from '../reducers/notificationReducer';
 import anecdoteService from '../services/anecdotes';
 
 const AnecdoteList = () => {
@@ -15,10 +15,10 @@ const AnecdoteList = () => {
   const sortedAnecdotes = anecdotes.sort((a, b) => b.votes - a.votes);
 
   const handleVote = async (anecdote) => {
-    await anecdoteService.vote(anecdote.id);
     dispatch(vote(anecdote.id));
-    dispatch(showVoteNotification(anecdote.content));
+    dispatch(showNotification(`You voted for ${anecdote.content}`, 5));
   };
+
   return (
     <>
       {sortedAnecdotes.map((anecdote) => (

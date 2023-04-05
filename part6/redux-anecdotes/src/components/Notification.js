@@ -18,7 +18,7 @@ const Notification = () => {
   }, [notification, dispatch]);
 
   if (notification !== '') {
-    return <div style={style}>{notification}</div>;
+    return <div style={style}>{notification.content}</div>;
   } else {
     return null;
   }
