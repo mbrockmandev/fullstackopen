@@ -1,5 +1,6 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { addVoteTo, initializeAnecdotes } from '../reducers/AnecdotesReducer';
+import { show } from '../reducers/NotificationReducer';
 import { useEffect } from 'react';
 
 const AnecdoteList = () => {
@@ -16,6 +17,12 @@ const AnecdoteList = () => {
 
   const handleVote = (anecdote) => {
     dispatch(addVoteTo(anecdote));
+    dispatch(
+      show({
+        message: `You voted for ${anecdote.content}`,
+        duration: 5000,
+      }),
+    );
   };
 
   return (

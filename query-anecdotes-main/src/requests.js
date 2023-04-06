@@ -8,7 +8,6 @@ export const getAnecdotes = async () => {
 };
 export const createAnecdote = async (newAnecdote) => {
   const res = await axios.post(baseUrl, newAnecdote);
-  console.log('NEW ANECDOTE:', res.data);
   return res.data;
 };
 export const updateAnecdote = async (updatedAnecdote) => {
