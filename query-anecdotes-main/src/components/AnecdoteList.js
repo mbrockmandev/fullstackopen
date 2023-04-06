@@ -1,21 +1,22 @@
 import { useDispatch, useSelector } from 'react-redux';
-import {} from '../reducers/AnecdotesReducer';
+import { addVoteTo, initializeAnecdotes } from '../reducers/AnecdotesReducer';
+import { useEffect } from 'react';
 
 const AnecdoteList = () => {
   const dispatch = useDispatch();
+  const anecdotes = useSelector((state) => state.anecdotes);
 
-  const anecdotes = useSelector((state) => {
-    return state.anecdotes;
-  });
+  useEffect(() => {
+    const fetchData = async () => {
+      dispatch(initializeAnecdotes());
+    };
+
+    fetchData();
+  }, [dispatch]);
 
   const handleVote = (anecdote) => {
-    dispatch({ payload: anecdote, type: 'VOTE' });
+    dispatch(addVoteTo(anecdote));
   };
-
-  if (anecdotes) {
-    console.log('anecdotes:', anecdotes);
-    return null;
-  }
 
   return (
     <>

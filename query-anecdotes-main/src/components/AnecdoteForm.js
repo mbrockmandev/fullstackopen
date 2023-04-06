@@ -1,6 +1,9 @@
-import anecdotesReducer from '../reducers/AnecdotesReducer';
+import { makeNewAnecdote } from '../reducers/AnecdotesReducer';
+import { useDispatch } from 'react-redux';
 
 const AnecdoteForm = () => {
+  const dispatch = useDispatch();
+
   const generateId = () => {
     return (Math.random() * 100000).toFixed(0);
   };
@@ -14,7 +17,7 @@ const AnecdoteForm = () => {
       id: generateId(),
       votes: 0,
     };
-    dispatch({ payload: newAnecdote, type: 'ADD' });
+    dispatch(makeNewAnecdote(newAnecdote));
   };
 
   return (
