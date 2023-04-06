@@ -1,16 +1,6 @@
-import { useMutation, useQueryClient } from 'react-query';
-import { createAnecdote } from '../requests';
+import anecdotesReducer from '../reducers/AnecdotesReducer';
 
-const AnecdoteForm = (props) => {
-  const queryClient = useQueryClient();
-
-  const newAnecdoteMutation = useMutation(createAnecdote, {
-    onSuccess: (newAnecdote) => {
-      const anecdotes = queryClient.getQueryData('anecdotes');
-      queryClient.setQueryData('anecdotes', anecdotes.concat(newAnecdote));
-    },
-  });
-
+const AnecdoteForm = () => {
   const generateId = () => {
     return (Math.random() * 100000).toFixed(0);
   };
@@ -19,7 +9,12 @@ const AnecdoteForm = (props) => {
     event.preventDefault();
     const content = event.target.anecdote.value;
     event.target.anecdote.value = '';
-    newAnecdoteMutation.mutate({ content, id: generateId(), votes: 0 });
+    const newAnecdote = {
+      content,
+      id: generateId(),
+      votes: 0,
+    };
+    dispatch({ payload: newAnecdote, type: 'ADD' });
   };
 
   return (
