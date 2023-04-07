@@ -102,6 +102,7 @@ const CreateNew = (props) => {
       info,
       votes: 0,
     });
+
     navigate('/');
   };
 
@@ -163,6 +164,9 @@ const App = () => {
     anecdote.id = Math.round(Math.random() * 10000);
     setAnecdotes(anecdotes.concat(anecdote));
     setNotification(`You added ${anecdote.content}`);
+    setTimeout(() => {
+      setNotification(null);
+    }, 5000);
   };
 
   const anecdoteById = (id) => anecdotes.find((a) => a.id === id);
@@ -186,6 +190,14 @@ const App = () => {
     return <h1>Software Anecdotes</h1>;
   };
 
+  const Notification = ({ notification }) => {
+    return (
+      <h2>
+        <i>{notification}</i>
+      </h2>
+    );
+  };
+
   const match = useMatch('/anecdotes/:id');
   const anecdote = match
     ? anecdotes.find((a) => a.id === Number(match.params.id))
@@ -195,6 +207,7 @@ const App = () => {
     <div>
       <Header />
       <Menu />
+      {notification && <Notification notification={notification} />}
       <Routes>
         <Route
           path='/'
