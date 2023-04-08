@@ -5,6 +5,7 @@ import Note from './components/Note';
 import Notes from './components/Notes';
 import Users from './components/Users';
 import Login from './components/Login';
+import React from 'react';
 
 const App = () => {
   const [notes, setNotes] = useState([
@@ -28,9 +29,9 @@ const App = () => {
     },
   ]);
 
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState<string | null>(null);
 
-  const login = (user) => {
+  const login = (user: string) => {
     setUser(user);
   };
 

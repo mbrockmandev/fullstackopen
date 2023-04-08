@@ -1,12 +1,16 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
-const Login = (props) => {
+interface LoginProps {
+  onLogin: (username: string) => void;
+}
+
+const Login: React.FC<LoginProps> = ({onLogin}) => {
   const navigate = useNavigate();
 
-  const onSubmit = (event) => {
+  const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    props.onLogin('mluukkai');
+    onLogin('mluukkai');
     navigate('/');
   };
 
