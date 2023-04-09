@@ -57,7 +57,6 @@ const Country = ({ country }) => {
         )
     }
     const _country = country.data[0];
-    console.log('country component: ', _country)
 
     return (
         <div>

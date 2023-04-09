@@ -14,6 +14,5 @@ export const useField = (type) => {
     return {
         props: { type, value, onChange },
         reset
-
     }
 }
