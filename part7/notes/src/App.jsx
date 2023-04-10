@@ -6,8 +6,37 @@ import Notes from './components/Notes';
 import Users from './components/Users';
 import Login from './components/Login';
 import React from 'react';
-import { Alert, Container, AppBar, Toolbar, IconButton, Button } from '@mui/material';
+// import { Alert, Container, AppBar, Toolbar, IconButton, Button } from '@mui/material';
+import styled from 'styled-components';
 
+const Button = styled.button`
+  background: Bisque;
+  font-size: 1em;
+  margin: 1em;
+  padding: 0.25em 1em;
+  border: 2px solid Chocolate;
+  border-radius: 3px;
+`
+
+const Input = styled.input`
+  margin: 0.25em;
+`
+
+const Page = styled.div`
+  padding: 1em;
+  background: papayawhip;
+`
+
+const Navigation = styled.div`
+  background: BurlyWood;
+  padding: 1em;
+`
+
+const Footer = styled.div`
+  background: Chocolate;
+  padding: 1em;
+  margin-top: 1em;
+`
 
 const App = () => {
 
@@ -54,70 +83,54 @@ const App = () => {
     : null;
   //
   return (
-    <Container>
-      <div>
-        {(message &&
-          <Alert severity="success">
-            {message}
-          </Alert>
-        )}
-        <AppBar position="static">
-          <Toolbar>
-            <Button color="inherit" component={Link} to="/">
-              home
-            </Button>
-            <Button color="inherit" component={Link} to="/notes">
-              notes
-            </Button>
-            <Button color="inherit" component={Link} to="/users">
-              users
-            </Button>
-            {user
-              ? <em>{user} logged in</em>
-              : <Button color="inherit" component={Link} to="/login">
-                login
-              </Button>
-            }
-          </Toolbar>
-        </AppBar>
-        <Routes>
-          <Route
-            path='/notes/:id'
-            element={<Note note={note} />}
-          />
-          <Route
-            path='/notes'
-            element={<Notes notes={notes} />}
-          />
-          <Route
-            path='/users'
-            element={
-              user ? (
-                <Users />
-              ) : (
-                <Navigate
-                  replace
-                  to='/login'
-                />
-              )
-            }
-          />
-          <Route
-            path='/login'
-            element={<Login onLogin={login} />}
-          />
-          <Route
-            path='/'
-            element={<Home />}
-          />
-        </Routes>
+    <Page>
+      <Navigation>
+        <Link style={padding} to='/'>home</Link>
+        <Link style={padding} to='/notes'>notes</Link>
+        <Link style={padding} to='/users'>users</Link>
+        {user
+          ? <em>{user} logged in</em>
+          : <Link style={padding} to='/login'>login</Link>
+        }
+      </Navigation>
 
-        <footer>
-          <br />
-          <em>Note app, Department of Computer Science 2023</em>
-        </footer>
-      </div >
-    </Container>
+      <Routes>
+        <Route
+          path='/notes/:id'
+          element={<Note note={note} />}
+        />
+        <Route
+          path='/notes'
+          element={<Notes notes={notes} />}
+        />
+        <Route
+          path='/users'
+          element={
+            user ? (
+              <Users />
+            ) : (
+              <Navigate
+                replace
+                to='/login'
+              />
+            )
+          }
+        />
+        <Route
+          path='/login'
+          element={<Login onLogin={login} />}
+        />
+        <Route
+          path='/'
+          element={<Home />}
+        />
+      </Routes>
+
+      <Footer>
+        <br />
+        <em>Note app, Department of Computer Science 2023</em>
+      </Footer>
+    </Page >
   );
 };
 
