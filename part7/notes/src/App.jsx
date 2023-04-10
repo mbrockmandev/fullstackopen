@@ -6,9 +6,8 @@ import Notes from './components/Notes';
 import Users from './components/Users';
 import Login from './components/Login';
 import React from 'react';
-import { useCounter } from './hooks/useCounter';
-import { Alert, Nav, Navbar, NavLink } from 'react-bootstrap';
-import NavbarCollapse from 'react-bootstrap/esm/NavbarCollapse';
+import { Alert, Container, AppBar, Toolbar, IconButton, Button } from '@mui/material';
+
 
 const App = () => {
 
@@ -55,71 +54,70 @@ const App = () => {
     : null;
   //
   return (
-    <div className='container'>
-      {(message &&
-        <Alert variant="success">
-          {message}
-        </Alert>
-      )}
-      <Navbar collapseOnSelect expand="md" bg="dark" variant="dark">
-        <Navbar.Toggle aria-controls='responsive-navbar-nav' />
-        <NavbarCollapse id='responsive-navbar-nav'>
-          <Nav className='me-auto'>
-            <NavLink href='#' as='span'>
-              <Link style={padding} to='/'>home</Link>
-            </NavLink>
-            <NavLink href='#' as='span'>
-              <Link style={padding} to='/'>notes</Link>
-            </NavLink>
-            <NavLink href='#' as='span'>
-              <Link style={padding} to='/'>users</Link>
-            </NavLink>
-            <NavLink href='#' as='span'>
-              {user
-                ? <em style={padding}> {user} logged in</em>
-                : <Link style={padding} to='/login'>login</Link>
-              }
-            </NavLink>
-          </Nav>
-        </NavbarCollapse>
-      </Navbar>
-      <Routes>
-        <Route
-          path='/notes/:id'
-          element={<Note note={note} />}
-        />
-        <Route
-          path='/notes'
-          element={<Notes notes={notes} />}
-        />
-        <Route
-          path='/users'
-          element={
-            user ? (
-              <Users />
-            ) : (
-              <Navigate
-                replace
-                to='/login'
-              />
-            )
-          }
-        />
-        <Route
-          path='/login'
-          element={<Login onLogin={login} />}
-        />
-        <Route
-          path='/'
-          element={<Home />}
-        />
-      </Routes>
+    <Container>
+      <div>
+        {(message &&
+          <Alert severity="success">
+            {message}
+          </Alert>
+        )}
+        <AppBar position="static">
+          <Toolbar>
+            <Button color="inherit" component={Link} to="/">
+              home
+            </Button>
+            <Button color="inherit" component={Link} to="/notes">
+              notes
+            </Button>
+            <Button color="inherit" component={Link} to="/users">
+              users
+            </Button>
+            {user
+              ? <em>{user} logged in</em>
+              : <Button color="inherit" component={Link} to="/login">
+                login
+              </Button>
+            }
+          </Toolbar>
+        </AppBar>
+        <Routes>
+          <Route
+            path='/notes/:id'
+            element={<Note note={note} />}
+          />
+          <Route
+            path='/notes'
+            element={<Notes notes={notes} />}
+          />
+          <Route
+            path='/users'
+            element={
+              user ? (
+                <Users />
+              ) : (
+                <Navigate
+                  replace
+                  to='/login'
+                />
+              )
+            }
+          />
+          <Route
+            path='/login'
+            element={<Login onLogin={login} />}
+          />
+          <Route
+            path='/'
+            element={<Home />}
+          />
+        </Routes>
 
-      <footer>
-        <br />
-        <em>Note app, Department of Computer Science 2023</em>
-      </footer>
-    </div >
+        <footer>
+          <br />
+          <em>Note app, Department of Computer Science 2023</em>
+        </footer>
+      </div >
+    </Container>
   );
 };
 
