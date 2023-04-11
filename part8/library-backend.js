@@ -94,7 +94,8 @@ const typeDefs = `
   }
 
   type Query {
-    allBooks: [Book!]!
+    allBooks(author: String, genre: String): [Book!]!
+    allAuthors: [String!]!
     bookCount: Int!
     authorCount: Int!
   }
@@ -102,20 +103,52 @@ const typeDefs = `
 
 const resolvers = {
   Query: {
-    allBooks: () => {
-      return books;
+    allBooks: (root, args) => {
+      console.log("args:", args);
+      // both are present
+      if (args.genre && args.author) {
+        const results = [];
+        if (b.author === args.author && b.genres.includes(args.genre)) {
+          results.push(b);
+        }
+        return results;
+      }
+      // author is present
+      if (args.author && !args.genre) {
+        return books.filter((b) => b.author === args.author);
+      }
+      // genres are present
+      if (args.genre && !args.author) {
+        return books.filter((b) => b.genres.includes(args.genre));
+      }
+      // neither arg is present
+      if (!args.author && !args.genre) {
+        return books;
+      }
+
+      throw new Error("Whoops. Check the allBooks resolver.");
+    },
+    allAuthors: () => {
+      const authors = [];
+
+      books.map((b) => {
+        if (!authors.includes(b.author)) {
+          authors.push(b.author);
+        }
+      });
+      return authors;
     },
     bookCount: (root, args) => books.length,
     authorCount: (root, args) => {
       const checkSet = [];
       for (let i = 0; i < books.length; i++) {
         const book = books[i];
-        console.log(book);
+        // console.log(book);
         if (!checkSet.includes(book.author)) {
           checkSet.push(book.author);
         }
       }
-      console.log(checkSet);
+      // console.log(checkSet);
       return checkSet.length;
     },
   },
