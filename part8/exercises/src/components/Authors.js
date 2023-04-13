@@ -1,11 +1,17 @@
-import { ALL_AUTHORS } from "../queries";
-import { useQuery } from "@apollo/client";
+import { ALL_AUTHORS, EDIT_BIRTH_YEAR } from "../queries";
+import { useQuery, useMutation } from "@apollo/client";
 import { v4 as uuid } from "uuid";
+import { useState } from "react";
 
 const Authors = (props) => {
+  const [newBorn, setNewBorn] = useState("");
+  const [newName, setNewName] = useState("");
+
   const results = useQuery(ALL_AUTHORS, {
     pollInterval: 2000,
   });
+
+  const [updateBirthYear] = useMutation(EDIT_BIRTH_YEAR);
 
   if (!props.show) {
     return null;
@@ -14,13 +20,14 @@ const Authors = (props) => {
   if (results.loading) {
     return <div>loading...</div>;
   }
-  // else if (results.error) {
-  //   console.log(results);
-  //   return <div style={{ color: "red" }}>Error: {results.error.message}</div>;
-  // } else if (results.data) {
-  //   console.log(results.data.allAuthors);
-  //   console.log(typeof results.data.allAuthors[Symbol.iterator] === "function");
-  // }
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    updateBirthYear({ variables: { name: newName, born: newBorn } });
+
+    console.log(newName, newBorn, "submitted!");
+  };
 
   return (
     <div>
@@ -45,34 +52,29 @@ const Authors = (props) => {
           ))}
         </tbody>
       </table>
+
+      <div>
+        <form onSubmit={handleSubmit}>
+          <div>
+            Name:
+            <input
+              value={newName}
+              onChange={({ target }) => setNewName(target.value)}
+            />
+          </div>
+          <div>
+            Born:
+            <input
+              type="number"
+              value={newBorn}
+              onChange={({ target }) => setNewBorn(parseInt(target.value))}
+            />
+          </div>
+          <button type="submit">create book</button>
+        </form>
+      </div>
     </div>
   );
 };
-
-//               <td>{a.books}</td>
-
-//   return (
-//     <div>
-//       <h2>books</h2>
-//
-//       <table>
-//         <tbody>
-//           <tr>
-//             <th></th>
-//             <th>author</th>
-//             <th>published</th>
-//           </tr>
-//           {results.data.allBooks.map((a) => (
-//             <tr key={a.title}>
-//               <td>{a.title}</td>
-//               <td>{a.author}</td>
-//               <td>{a.published}</td>
-//             </tr>
-//           ))}
-//         </tbody>
-//       </table>
-//     </div>
-//   );
-// };
 
 export default Authors;

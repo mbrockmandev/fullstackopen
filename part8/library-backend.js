@@ -121,6 +121,10 @@ const typeDefs = `
       published: Int
       genres: [String]
     ): Book
+    editAuthor(
+      name: String!
+      born: Int!
+    ): Author
   }`;
 
 const resolvers = {
