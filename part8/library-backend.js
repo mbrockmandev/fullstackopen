@@ -95,14 +95,15 @@ const typeDefs = `
   }
 
   type Author {
-    born: Int!
-    bookCount: Int!
+    born: Int
+    numOfBooks: Int!
     name: String!
+    books: [Book!]!
   }
 
   type Query {
     allBooks(author: String, genre: String): [Book!]!
-    allAuthors: [String!]!
+    allAuthors: [Author!]!
     bookCount: Int!
     authorCount: Int!
   }
@@ -152,29 +153,30 @@ const resolvers = {
       const authorsResult = [];
 
       authors.map((a) => {
-        if (!authorsResult.includes(a.id)) {
-          const newAuthor = {
-            born: a.born,
+        const existingAuthor = authorsResult.find(
+          (author) => author.name === a.name
+        );
+
+        if (!existingAuthor) {
+          authorsResult.push({
             name: a.name,
-            bookCount: 1,
-          };
-        } else {
-          // increment bookCount
+            born: a.born,
+            numOfBooks: 1,
+            books: books.filter((b) => b.author === a.name),
+          });
         }
       });
 
-      books.map((b) => {
-        if (!authorsResult.includes(b.author)) {
-          // need to add logic to grab born, name, and bookCount -- bookCount should be 1 up here
-          const newAuthor = {};
-          authorsResult.push(b.author);
-        } else {
-          // increment the book count
-        }
-      });
-      return authors;
+      authorsResult.forEach(
+        (author) => (author.numOfBooks = author.books.length)
+      );
+
+      return authorsResult;
     },
-    bookCount: (root, args) => books.length,
+
+    bookCount: (root, args) => {
+      return books.length;
+    },
     authorCount: (root, args) => {
       const checkSet = [];
       for (let i = 0; i < books.length; i++) {
@@ -188,6 +190,7 @@ const resolvers = {
       return checkSet.length;
     },
   },
+
   Mutation: {
     addBook: (root, args) => {
       if (books.find((b) => b.title === args.title)) {
