@@ -7,26 +7,30 @@ const Authors = (props) => {
   const [newBorn, setNewBorn] = useState("");
   const [newName, setNewName] = useState("");
 
-  const results = useQuery(ALL_AUTHORS, {
+  const { data, loading, refetch } = useQuery(ALL_AUTHORS, {
     pollInterval: 2000,
   });
 
-  const [updateBirthYear] = useMutation(EDIT_BIRTH_YEAR);
+  const [updateBirthYear] = useMutation(EDIT_BIRTH_YEAR, {
+    onCompleted: () => refetch(),
+  });
 
   if (!props.show) {
     return null;
   }
 
-  if (results.loading) {
+  if (loading) {
     return <div>loading...</div>;
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     updateBirthYear({ variables: { name: newName, born: newBorn } });
 
     console.log(newName, newBorn, "submitted!");
+    setNewName("");
+    setNewBorn("");
   };
 
   return (
@@ -40,7 +44,7 @@ const Authors = (props) => {
             <th># books</th>
             <th>Titles</th>
           </tr>
-          {results.data.allAuthors.map((a) => (
+          {data.allAuthors.map((a) => (
             <tr key={`${a.name}_${uuid()}`}>
               <td>{a.name}</td>
               <td>{a.born ? a.born : "N/A"}</td>
@@ -70,7 +74,7 @@ const Authors = (props) => {
               onChange={({ target }) => setNewBorn(parseInt(target.value))}
             />
           </div>
-          <button type="submit">create book</button>
+          <button type="submit">update author info</button>
         </form>
       </div>
     </div>
