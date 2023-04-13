@@ -7,12 +7,15 @@ const Authors = (props) => {
   const [newBorn, setNewBorn] = useState("");
   const [newName, setNewName] = useState("");
 
-  const { data, loading, refetch } = useQuery(ALL_AUTHORS, {
+  const { data, loading } = useQuery(ALL_AUTHORS, {
     pollInterval: 2000,
+    onError: (error) => {
+      props.setError(error);
+    },
   });
 
   const [updateBirthYear] = useMutation(EDIT_BIRTH_YEAR, {
-    onCompleted: () => refetch(),
+    refetchQueries: [{ query: ALL_AUTHORS }],
   });
 
   if (!props.show) {
@@ -26,11 +29,11 @@ const Authors = (props) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    updateBirthYear({ variables: { name: newName, born: newBorn } });
-
-    console.log(newName, newBorn, "submitted!");
-    setNewName("");
-    setNewBorn("");
+    if (newName !== "" && newBorn !== "") {
+      updateBirthYear({ variables: { name: newName, born: newBorn } });
+      setNewName("");
+      setNewBorn("");
+    }
   };
 
   return (
@@ -59,13 +62,14 @@ const Authors = (props) => {
 
       <div>
         <form onSubmit={handleSubmit}>
-          <div>
+          <label>
             Name:
-            <input
-              value={newName}
-              onChange={({ target }) => setNewName(target.value)}
-            />
-          </div>
+            <select name="selectedAuthor">
+              {data.allAuthors.map((a) => (
+                <option>{a.name}</option>
+              ))}
+            </select>
+          </label>
           <div>
             Born:
             <input
