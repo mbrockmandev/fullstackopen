@@ -1,1 +1,3 @@
-this is a readme file for fullstack open's online curriculum.
+# Full Stack Open -- Online Curriculum and Exercises
+
+The "blog" above has been completed with all original code, built from scratch, to meet the program's rubric.
