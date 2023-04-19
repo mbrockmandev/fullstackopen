@@ -1,12 +1,12 @@
-import { useMutation } from "@apollo/client";
-import { useState } from "react";
-import { ALL_PERSONS, CREATE_PERSON } from "./queries";
+import { useMutation } from '@apollo/client';
+import { useState } from 'react';
+import { ALL_PERSONS, CREATE_PERSON } from './queries';
 
 const PersonForm = ({ setError }) => {
-  const [name, setName] = useState("");
-  const [phone, setPhone] = useState("");
-  const [street, setStreet] = useState("");
-  const [city, setCity] = useState("");
+  const [name, setName] = useState('');
+  const [phone, setPhone] = useState('');
+  const [street, setStreet] = useState('');
+  const [city, setCity] = useState('');
 
   const [createPerson] = useMutation(CREATE_PERSON, {
     refetchQueries: [{ query: ALL_PERSONS }],
@@ -20,12 +20,19 @@ const PersonForm = ({ setError }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    createPerson({ variables: { name, phone, street, city } });
+    createPerson({
+      variables: {
+        name,
+        phone: phone.length > 0 ? phone : undefined,
+        street,
+        city,
+      },
+    });
 
-    setName("");
-    setPhone("");
-    setStreet("");
-    setCity("");
+    setName('');
+    setPhone('');
+    setStreet('');
+    setCity('');
   };
 
   return (
@@ -61,7 +68,7 @@ const PersonForm = ({ setError }) => {
           />
         </div>
 
-        <button type="submit">add!</button>
+        <button type='submit'>add!</button>
       </form>
     </div>
   );

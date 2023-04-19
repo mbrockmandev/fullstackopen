@@ -8,9 +8,11 @@ import BlogForm from './components/BlogForm';
 import blogService from './services/blogs';
 import Notification from './components/Notification';
 import Togglable from './components/Togglable';
+import { useNavigate } from 'react-router-dom';
 
 const App = () => {
   // const blogFormRef = useRef();
+  const navigate = useNavigate();
 
   // list of blogs
   const [blogs, setBlogs] = useState([]);
@@ -81,7 +83,7 @@ const App = () => {
     }
   };
 
-  const handleAddBlog = async (e) => {
+  const handleAddBlog = async () => {
     try {
       const credentials = await loginService.getCredentials(token);
 
@@ -141,6 +143,7 @@ const App = () => {
       setToken(user.token);
       setUsername('');
       setPassword('');
+      navigate('/blogs');
     } catch (error) {
       const message = 'Incorrect username/password.';
       showNotification(message, 'error');

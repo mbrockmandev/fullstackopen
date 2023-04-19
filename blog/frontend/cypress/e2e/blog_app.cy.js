@@ -1,5 +1,5 @@
-describe('Blog App', function () {
-  beforeEach(function () {
+describe('Blog App', function() {
+  beforeEach(function() {
     cy.request('POST', `${Cypress.env('BACKEND')}/testing/reset`);
     const user = {
       name: 'mike',
@@ -10,14 +10,14 @@ describe('Blog App', function () {
     cy.visit('');
   });
 
-  it('Login Form Is Shown', function () {
+  it('Login Form Is Shown', function() {
     cy.contains('Username: ');
     cy.contains('Password: ');
     cy.contains('Login');
   });
 
-  describe('Login', function () {
-    it('can login with correct credentials', function () {
+  describe('Login', function() {
+    it('can login with correct credentials', function() {
       cy.get('#username').type('mike');
       cy.get('#password').type('12345');
       cy.get('#btn-login').click();
@@ -25,7 +25,7 @@ describe('Blog App', function () {
       cy.visit('');
     });
 
-    it('cannot login with incorrect credentials', function () {
+    it('cannot login with incorrect credentials', function() {
       cy.get('#username').type('mikey');
       cy.get('#password').type('123456');
       cy.get('#btn-login').click();
@@ -34,8 +34,8 @@ describe('Blog App', function () {
     });
   });
 
-  describe('When Logged In', function () {
-    beforeEach(function () {
+  describe('When Logged In', function() {
+    beforeEach(function() {
       //log in user
       const user = {
         username: 'mike',
@@ -46,7 +46,7 @@ describe('Blog App', function () {
       cy.visit('');
     });
 
-    it('blog can be created', function () {
+    it('blog can be created', function() {
       cy.createBlog({
         title: 'a new title',
         author: 'ME!',
@@ -55,7 +55,7 @@ describe('Blog App', function () {
       cy.contains('a new title -- ME!');
     });
 
-    it('blog can be liked', function () {
+    it('blog can be liked', function() {
       cy.createBlog({
         title: 'a new title',
         author: 'ME!',
@@ -69,7 +69,7 @@ describe('Blog App', function () {
       cy.contains('Likes: 1');
     });
 
-    it('blog can be deleted by authorized user', function () {
+    it('blog can be deleted by authorized user', function() {
       // delete blog
       cy.createBlog({
         title: 'a new title',
@@ -85,7 +85,7 @@ describe('Blog App', function () {
       cy.get('@blogToBeDeleted').should('not.exist');
     });
 
-    it('blog does not show delete button for non-owners', function () {
+    it('blog does not show delete button for non-owners', function() {
       // create new user
       // login with new user
       const user = {
@@ -131,7 +131,7 @@ describe('Blog App', function () {
       cy.get('@deleteButton').should('not.exist');
     });
 
-    it.only('clicking on the blog sort button changes sorting methods', function () {
+    it.only('clicking on the blog sort button changes sorting methods', function() {
       // lots of steps here...?
       cy.login({ name: 'mike', username: 'mike', password: '12345' });
       // add multiple blog posts
@@ -216,10 +216,10 @@ describe('Blog App', function () {
       cy.get('div.title-author').then(($elements) => {
         const strings = [...$elements].map((element) => element.innerText);
         expect(strings[0]).to.deep.equal(
-          'Introduction to React.js -- Mike Brown',
+          'Introduction to React.js -- Mike Brown'
         );
         expect(strings[9]).to.deep.equal(
-          'How to Build a RESTful API -- Sarah Lee',
+          'How to Build a RESTful API -- Sarah Lee'
         );
       });
     });

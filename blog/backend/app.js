@@ -25,7 +25,9 @@ const connectDb = async () => {
 connectDb();
 
 mongoose.connection.once('open', () => {
-  console.log(`Connected to ${config.MONGO_URI} using port ${config.PORT}`);
+  console.log(
+    `Connected to ${config.MONGO_URI} and server is running on port ${config.PORT}`,
+  );
 });
 
 app.use(cors());
