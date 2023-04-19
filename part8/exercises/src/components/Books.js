@@ -1,7 +1,8 @@
-import { useQuery } from "@apollo/client";
-import { ALL_BOOKS } from "../queries";
+import { useQuery } from '@apollo/client';
+import { ALL_BOOKS } from '../queries';
 
 const Books = (props) => {
+  console.log('Books props:', props);
   const results = useQuery(ALL_BOOKS, {
     pollInterval: 2000,
   });

@@ -15,6 +15,13 @@ const PersonForm = ({ setError }) => {
       const messages = Object.values(errors).map((e) => e.message);
       setError(messages);
     },
+    update: (cache, response) => {
+      cache.updateQuery({ query: ALL_PERSONS }, ({ allPersons }) => {
+        return {
+          allPersons: allPersons.concat(response.data.addPerson),
+        };
+      });
+    },
   });
 
   const handleSubmit = (e) => {
